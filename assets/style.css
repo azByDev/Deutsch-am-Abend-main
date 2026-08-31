@@ -103,12 +103,6 @@ p {
   padding: 0 28px;
 }
 
-.container2 {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 28px;
-}
-
 .skip-link {
   position: absolute;
   left: -9999px;
@@ -235,7 +229,7 @@ nav.main-nav a[aria-current="page"] {
   gap: 8px;
   font-family: var(--mono);
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 .lang-switch a {
   text-decoration: none;
@@ -807,7 +801,7 @@ table.schedule th {
   background: #2d5016;
   color: #fff;
   font-weight: 600;
-  font-family: "Crimson Text", serif;
+  font-family: var(--body);
   font-size: 1.05rem;
 }
 table.schedule tr:last-child td {
@@ -1141,6 +1135,17 @@ footer.site-footer {
     transparent 50%
   );
 }
+
+.cta-band2::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 20% 80%,
+    rgba(255, 255, 255, 0.08),
+    transparent 50%
+  );
+}
 .cta-band > * {
   position: relative;
   z-index: 2;
@@ -1423,7 +1428,7 @@ footer.site-footer {
 }
 .bank-row .bank-value {
   font-family: var(--mono);
-  font-weight: 600;
+  font-weight: 700;
   color: var(--charcoal);
   text-align: right;
 }
