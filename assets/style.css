@@ -1115,6 +1115,16 @@ footer.site-footer {
   position: relative;
   overflow: hidden;
 }
+
+.cta-band2 {
+  background: #fff;
+  color: #2d5016;
+  border-radius: 18px;
+  padding: 56px 48px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
 .cta-band::before {
   content: "";
   position: absolute;
