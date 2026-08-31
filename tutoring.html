@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1-on-1 Tutoring — Deutsch am Abend</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/style.css" />
+    <style>
+      /* Page-specific additions — built on the same tokens as assets/style.css */
+      .info-box {
+        border: 1.5px solid var(--line);
+        border-left: 4px solid var(--orange);
+        border-radius: 10px;
+        background: var(--cream);
+        padding: 22px 26px;
+        margin: 0 0 28px;
+      }
+      s .info-box h3 {
+        font-size: 1rem;
+        margin-bottom: 8px;
+      }
+      .info-box p {
+        font-size: 0.92rem;
+        color: var(--charcoal);
+        margin: 0 0 10px;
+        line-height: 1.6;
+      }
+      .info-box p:last-child {
+        margin-bottom: 0;
+      }
+      .info-box.forest {
+        border-left-color: var(--forest);
+        background: var(--forest-light);
+      }
+
+      .check-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      @media (max-width: 560px) {
+        .check-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .check-card {
+        border: 1.5px solid var(--line);
+        border-radius: 10px;
+        padding: 12px 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        font-size: 0.92rem;
+        background: var(--cream);
+        transition: all 0.2s ease;
+      }
+      .check-card:hover {
+        border-color: var(--orange);
+        background: rgba(200, 90, 58, 0.04);
+      }
+      .check-card input {
+        accent-color: var(--orange);
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+        cursor: pointer;
+      }
+      .check-card input:checked + span {
+        color: var(--forest);
+        font-weight: 600;
+      }
+
+      .field-note {
+        font-size: 0.82rem;
+        color: var(--slate);
+        margin-top: 6px;
+      }
+
+      .eyebrow-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        font-weight: 600;
+        color: var(--forest);
+        background: var(--forest-light);
+        border-radius: 999px;
+        padding: 6px 14px;
+        margin-bottom: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+
+    <div class="np-banner">
+      <div class="container">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            d="M12 21s-8-4.5-8-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6.5-8 11-8 11z"
+          />
+        </svg>
+        <span
+          ><strong>1-on-1 tutoring:</strong> billed at your teacher's own hourly
+          rate, separate from group class tuition.</span
+        >
+      </div>
+    </div>
+
+    <header class="site-header">
+      <div class="container">
+        <a href="index.html" class="brand">
+          <span class="brand-mark">DAA</span>
+          <span class="brand-name"
+            >Deutsch am Abend<small>German Language Community</small></span
+          >
+        </a>
+        <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M3 6h18M3 12h18M3 18h18" />
+          </svg>
+        </button>
+        <nav class="main-nav" aria-label="Main">
+          <a href="index.html">Home</a>
+          <a href="about.html">About</a>
+          <a href="services.html">Courses & Prices</a>
+          <a href="registration.html">Group Registration</a>
+          <a href="tutoring.html" aria-current="page">1-on-1 Tutoring</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" style="padding: 64px 0">
+        <div class="container">
+          <div class="hero-inner">
+            <span class="eyebrow">1-on-1 Tutoring </span>
+            <h1>Prefer to learn 1-on-1 instead of in a group?</h1>
+            <p class="lede">
+              Same qualified teachers, a schedule built around you, and lessons
+              shaped entirely by your goals — whether that's exam prep, catching
+              up before rejoining a group, or steady conversation practice. Fill
+              in the form below and we'll match you with a teacher.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-cream">
+        <div class="container">
+          <div class="form-shell">
+            <div class="info-box">
+              <h2>How this is different from a group class?</h2>
+              <p>
+                1-on-1 tutoring provides dedicated, individualised instruction
+                tailored specifically to your needs, goals, and learning pace.
+                Unlike a group class, where the lesson structure and teaching
+                time are shared among several participants, a 1-on-1 session is
+                focused entirely on one learner. The 1-on-1 tutoring is priced
+                separately from our standard group-class tuition.
+              </p>
+              <p>
+                The information provided in this form allows us to understand
+                your needs and prepare the most suitable tutoring arrangement. —
+                nothing is billed by submitting it.
+              </p>
+            </div>
+
+            <form id="tutoring-form" novalidate>
+              <fieldset>
+                <legend>1. Your information</legend>
+                <div class="field-row">
+                  <div class="field">
+                    <label for="firstname"
+                      >First name <span class="required-mark">*</span></label
+                    >
+                    <input
+                      type="text"
+                      id="firstname"
+                      name="firstname"
+                      autocomplete="given-name"
+                      required
+                    />
+                  </div>
+                  <div class="field">
+                    <label for="lastname"
+                      >Last name <span class="required-mark">*</span></label
+                    >
+                    <input
+                      type="text"
+                      id="lastname"
+                      name="lastname"
+                      autocomplete="family-name"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="field-row">
+                  <div class="field">
+                    <label for="email"
+                      >Email address <span class="required-mark">*</span></label
+                    >
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      autocomplete="email"
+                      required
+                    />
+                  </div>
+                  <div class="field">
+                    <label for="phone"
+                      >Phone number <span class="required-mark">*</span></label
+                    >
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      autocomplete="tel"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="field-row">
+                  <div class="field">
+                    <label for="age"
+                      >Age <span class="required-mark">*</span></label
+                    >
+                    <input
+                      type="text"
+                      id="age"
+                      name="age"
+                      autocomplete="bday"
+                      required
+                    />
+                  </div>
+
+                  <div class="field">
+                    <label for="cityarea"
+                      >City / area (for in-person feasibility)</label
+                    >
+                    <input
+                      type="text"
+                      id="cityarea"
+                      name="cityarea"
+                      placeholder="e.g. Makati City"
+                    />
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>2. German language background</legend>
+                <div class="field-row">
+                  <div class="field">
+                    <label for="currentlevel">Current German level</label>
+                    <select id="currentlevel" name="currentlevel">
+                      <option>Complete beginner</option>
+                      <option>A1</option>
+                      <option>A2</option>
+                      <option>B1</option>
+                      <option>B2</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="priorstudy"
+                      >Where did you last study German?</label
+                    >
+                    <input
+                      type="text"
+                      id="priorstudy"
+                      name="priorstudy"
+                      placeholder="e.g. self-study, Goethe-Institut, school"
+                    />
+                  </div>
+                </div>
+                <div class="field">
+                  <label>Are you currently in the Philippines?</label>
+                  <div
+                    class="radio-grid"
+                    style="grid-template-columns: repeat(2, minmax(0, 180px))"
+                  >
+                    <label class="radio-card"
+                      ><input
+                        type="radio"
+                        name="philippines"
+                        value="Yes"
+                      /><span>Yes</span></label
+                    >
+                    <label class="radio-card"
+                      ><input
+                        type="radio"
+                        name="philippines"
+                        value="No"
+                        checked
+                      /><span>No</span></label
+                    >
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>3. Goals &amp; focus for the teacher</legend>
+                <p class="field-note" style="margin: -8px 0 16px">
+                  This goes straight into your teacher's briefing — the more
+                  specific, the better the first lesson will fit you.
+                </p>
+                <div class="field">
+                  <label
+                    >Main reason for 1-on-1 lessons (select all that
+                    apply)</label
+                  >
+                  <div class="check-grid">
+                    <label class="check-card"
+                      ><input
+                        type="checkbox"
+                        name="goal"
+                        value="Family Reunification Visa"
+                      /><span>Family Reunification Visa</span></label
+                    >
+                    <label class="check-card"
+                      ><input
+                        type="checkbox"
+                        name="goal"
+                        value="Goethe Exam Prep"
+                      /><span>Goethe Exam Prep</span></label
+                    >
+                    <label class="check-card"
+                      ><input
+                        type="checkbox"
+                        name="goal"
+                        value="Ausbildung / Vocational Training Visa"
+                      /><span
+                        >Ausbildung / Vocational Training Visa</span
+                      ></label
+                    >
+                    <label class="check-card"
+                      ><input
+                        type="checkbox"
+                        name="goal"
+                        value="Work / Opportunity Card (Chancenkarte)"
+                      /><span
+                        >Work / Opportunity Card (Chancenkarte)
+                      </span></label
+                    >
+                    <label class="check-card"
+                      ><input
+                        type="checkbox"
+                        name="goal"
+                        value="Study or visa purposes"
+                      /><span>Study / Language visa purposes</span></label
+                    >
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="examtarget"
+                    >For German Language Exam Certification: which exam, and
+                    target date?</label
+                  >
+                  <input
+                    type="text"
+                    id="examtarget"
+                    name="examtarget"
+                    placeholder="e.g. Goethe-Zertifikat B1, October 2027"
+                  />
+                </div>
+                <div class="field">
+                  <label for="goaldetail"
+                    >Tell us more about what you want to get out of these
+                    lessons</label
+                  >
+                  <textarea
+                    id="goaldetail"
+                    name="goaldetail"
+                    placeholder="e.g. specific weak points, an upcoming trip, a job interview, a topic you want to work through..."
+                  ></textarea>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>4. Scheduling &amp; format</legend>
+                <div class="field-row">
+                  <div class="field">
+                    <label for="format">Preferred format</label>
+                    <select id="format" name="format">
+                      <option value="">Select format</option>
+                      <option>Online</option>
+                      <option>In-person</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="frequency">Preferred frequency</label>
+                    <select id="frequency" name="frequency">
+                      <option value="">Select frequency</option>
+                      <option>Once a week</option>
+                      <option>2x a week</option>
+                      <option>3x a week</option>
+                      <option>4x a week</option>
+                      <option>5x a week</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="field-row">
+                  <div class="field">
+                    <label for="sessionlength">Preferred session length</label>
+                    <select id="sessionlength" name="sessionlength">
+                      <option value="">Select length</option>
+                      <option>1 hour</option>
+                      <option>2 hours</option>
+                      <option>3 hours</option>
+                      <option>4 hours</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="startdate">Preferred start date</label>
+                    <input
+                      type="text"
+                      id="startdate"
+                      name="startdate"
+                      placeholder="DD/MM/YYYY"
+                    />
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="availability"
+                    >Days &amp; times you're generally free</label
+                  >
+                  <textarea
+                    id="availability"
+                    name="availability"
+                    placeholder="e.g. Tue/Thu evenings after 7pm, Mon/Wed mornings"
+                  ></textarea>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>5. Rate acknowledgment</legend>
+                <div class="info-box forest">
+                  <h3>Tutoring Rates</h3>
+                  <p>
+                    Our 1-on-1 tutoring offers focused, personalized support
+                    tailored to your goals, language level, and individual
+                    learning pace. Because every session is customized to your
+                    needs, 1-on-1 tutoring is priced separately from our group
+                    course tuition. Before you get started, we’ll share your
+                    exact tutoring rate with you, so everything is clear and
+                    transparent from the very beginning.
+                  </p>
+                </div>
+                <div class="field">
+                  <label
+                    >Are you amenable to paying 1-on-1 sessions hourly rate?
+                    <span class="required-mark">*</span></label
+                  >
+                  <div class="radio-grid">
+                    <label class="radio-card"
+                      ><input
+                        type="radio"
+                        name="rateagreement"
+                        value="Yes, I understand and agree"
+                        required
+                      /><span>Yes, I understand and agree</span></label
+                    >
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="budgetrange"
+                    >Your budget range per hour for the 1-on-1 sessions, it will
+                    help us match you with a suitable teacher.</label
+                  >
+                  <input
+                    type="text"
+                    id="budgetrange"
+                    name="budgetrange"
+                    placeholder="e.g. up to ₱800/hour"
+                  />
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>6. Payment process</legend>
+                <div class="info-box">
+                  <h3>Deutsch am Abend collects payment — not the teacher</h3>
+                  <p>
+                    We handle billing centrally and pay your teacher directly,
+                    so you never need to transact with the teacher yourself.
+                  </p>
+                  <p>
+                    Once your teacher and rate are confirmed, we'll email
+                    payment instructions (GCash or bank transfer).
+                  </p>
+
+                  <p></p>
+                  <p>
+                    <b
+                      >Payment is made directly to Deutsch am Abend before the
+                      session.</b
+                    >
+                  </p>
+                </div>
+                <div class="field-row">
+                  <div class="field">
+                    <label for="paymentmethod">Preferred payment method</label>
+                    <select id="paymentmethod" name="paymentmethod">
+                      <option value="">Select method</option>
+                      <option>GCash</option>
+                      <option>Bank transfer</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="paymenttiming"
+                      >Preferred payment arrangement</label
+                    >
+                    <select id="paymenttiming" name="paymenttiming">
+                      <option value="">Select arrangement</option>
+                      <option>Prepaid package (2 weeks of sessions)</option>
+                      <option>Prepaid package (1 month of sessions)</option>
+                    </select>
+                  </div>
+                </div>
+              </fieldset>
+
+              <div class="terms-check">
+                <input type="checkbox" id="terms" name="terms" required />
+                <label for="terms"
+                  >I confirm the information above is accurate, and understand
+                  this registration does not book or charge any lessons — the
+                  DAA Team will reach out to confirm the rate, schedule, and
+                  next steps. <span class="required-mark">*</span></label
+                >
+              </div>
+
+              <div class="form-foot">
+                <p class="form-note">
+                  Pressing the button will open your email app with this
+                  information pre-filled. Just press Send there to complete your
+                  Inquiry.
+                </p>
+                <button type="submit" class="btn btn-primary">
+                  Submit Inquiry
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <span class="brand-name" style="color: #fff">Deutsch am Abend</span>
+            <p>Non-profit German Language Community, Philippines.</p>
+          </div>
+          <div>
+            <h4>Explore</h4>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="about.html">About</a></li>
+              <li><a href="services.html">Courses & Prices</a></li>
+              <li><a href="registration.html">Group Registration</a></li>
+              <li><a href="tutoring.html">1-on-1 Tutoring</a></li>
+              <li><a href="contact.html">Contact</a></li>
+              <li><a href="donate.html">Donate</a></li>
+              <li><a href="data-privacy.html">Data Privacy</a></li>
+              <li><a href="terms.html">Terms &amp; Conditions</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© 2026 Deutsch am Abend.</span>
+          <span>Built with care, for the community.</span>
+        </div>
+      </div>
+    </footer>
+
+    <script src="assets/tutoring-mailto.js"></script>
+    <script src="assets/main.js"></script>
+  </body>
+</html>
