@@ -1115,16 +1115,6 @@ footer.site-footer {
   position: relative;
   overflow: hidden;
 }
-
-.cta-band2 {
-  background: #fff;
-  color: #2d5016;
-  border-radius: 18px;
-  padding: 56px 48px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
 .cta-band::before {
   content: "";
   position: absolute;
@@ -1136,16 +1126,6 @@ footer.site-footer {
   );
 }
 
-.cta-band2::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    circle at 20% 80%,
-    rgba(255, 255, 255, 0.08),
-    transparent 50%
-  );
-}
 .cta-band > * {
   position: relative;
   z-index: 2;
@@ -1165,6 +1145,50 @@ footer.site-footer {
 }
 @media (max-width: 600px) {
   .cta-band {
+    padding: 40px 28px;
+  }
+}
+
+.cta-band2 {
+  background: #fff;
+  color: #2d5016;
+  border-radius: 18px;
+  padding: 56px 48px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-band2::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 20% 80%,
+    rgba(255, 255, 255, 0.08),
+    transparent 50%
+  );
+}
+
+.cta-band2 > * {
+  position: relative;
+  z-index: 2;
+}
+.cta-band2 h2 {
+  color: #2d5016;
+  margin-bottom: 12px;
+}
+.cta-band2 p {
+  color: #6b6b6b;
+  max-width: 500px;
+  margin: 0 auto 28px;
+  font-size: 0.98rem;
+}
+.cta-band2 .btn {
+  margin: 0 auto;
+}
+@media (max-width: 600px) {
+  .cta-band2 {
     padding: 40px 28px;
   }
 }
