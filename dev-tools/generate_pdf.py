@@ -64,8 +64,8 @@ story.append(HRFlowable(width="100%", thickness=1.4, color=ORANGE, spaceAfter=14
 
 story.append(Paragraph("Membership Application Form", section_style))
 story.append(Paragraph(
-    "Deutsch am Abend Membership is free to apply for and gives you a 10% discount "
-    "on all course fees — A1 through B2, and Goethe-Zertifikat exam preparation. "
+    "Deutsch am Abend members receive an exclusive discount "
+    "on all course fees — A1 through B2, and Goethe-Zertifikat exam preparation courses. "
     "Please complete this form, sign it, and email it back to us together with your "
     "proof of payment for your chosen course.",
     body_style
@@ -181,7 +181,7 @@ story.append(field_row("Reference / Transaction No.:"))
 story.append(Paragraph("4. Declaration & Signature", section_style))
 story.append(Paragraph(
     "I confirm that the information provided above is accurate. I understand that "
-    "Deutsch am Abend Membership is free to apply for, and that my 10% course "
+    "Deutsch am Abend Membership is free to apply for, and that my course "
     "discount will be applied once this form and my proof of payment are verified "
     "by the Deutsch am Abend team.",
     body_style
