@@ -1,14 +1,16 @@
 /**
- * 1-ON-1 TUTORING REGISTRATION — MAILTO VERSION
+ * 1-ON-1 TUTORING REGISTRATION — WEB3FORMS VERSION
  * ================================================
- * Matches the pattern used by assets/registration-mailto.js. No third-party
- * email service — clicking "Submit registration" opens the visitor's own
- * email app with all the details already filled in.
+ * Submits in the background via Web3Forms (web3forms.com) instead of
+ * opening the visitor's email app. Works the same on desktop and mobile,
+ * with no dependency on a local mail client being configured.
  *
- * The address it sends to is set in the EMAIL_TO constant below.
+ * Free tier: 250 submissions/month, no account required — just an
+ * access key. Set it below.
  */
 
 var EMAIL_TO = "info.deutschamabend@gmail.com";
+var WEB3FORMS_ACCESS_KEY = "340f17bc-9b00-4aad-8212-6674838e62cd";
 
 document.addEventListener("DOMContentLoaded", function () {
   var form = document.getElementById("tutoring-form");
@@ -91,23 +93,59 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var body = bodyLines.join("\n");
 
-    var mailtoUrl =
-      "mailto:" +
-      EMAIL_TO +
-      "?subject=" +
-      encodeURIComponent(subject) +
-      "&body=" +
-      encodeURIComponent(body);
+    var submitBtn = form.querySelector('button[type="submit"]');
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.dataset.originalText = submitBtn.textContent;
+      submitBtn.textContent = "Sending…";
+    }
 
-    window.location.href = mailtoUrl;
+    var payload = new FormData();
+    payload.append("access_key", WEB3FORMS_ACCESS_KEY);
+    payload.append("subject", subject);
+    payload.append("from_name", firstname + " " + lastname);
+    payload.append("email", email);
+    payload.append("message", body);
 
-    showFormStatus(
-      "success",
-      "Opening your email app… Please review and press Send to complete your registration. " +
-        "If nothing opens, please email us directly at " +
-        EMAIL_TO +
-        ".",
-    );
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      body: payload,
+    })
+      .then(function (res) {
+        return res.json();
+      })
+      .then(function (data) {
+        if (data.success) {
+          showFormStatus(
+            "success",
+            "Thanks! Your tutoring registration has been sent. We'll get back to you at " +
+              email +
+              " soon.",
+          );
+          form.reset();
+        } else {
+          showFormStatus(
+            "error",
+            "Something went wrong sending your registration. Please try again, or email us directly at " +
+              EMAIL_TO +
+              ".",
+          );
+        }
+      })
+      .catch(function () {
+        showFormStatus(
+          "error",
+          "Something went wrong sending your registration. Please try again, or email us directly at " +
+            EMAIL_TO +
+            ".",
+        );
+      })
+      .finally(function () {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = submitBtn.dataset.originalText;
+        }
+      });
   });
 });
 
