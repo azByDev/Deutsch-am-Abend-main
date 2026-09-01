@@ -30,24 +30,27 @@ document.addEventListener("DOMContentLoaded", function () {
     var email = formData.get("email") || "";
     var phone = formData.get("phone") || "";
     var cityarea = formData.get("cityarea") || "";
+
     var currentlevel = formData.get("currentlevel") || "Not specified";
-    var priorstudy = formData.get("priorstudy") || "";
+    var previouschool = formData.get("previouschool") || "";
     var location = formData.get("location") || "No";
+
     var goals = formData.getAll("goal").join(", ") || "Not specified";
-    var examtarget = formData.get("examtarget") || "";
+    var targetexam = formData.get("targetexam") || "";
     var goaldetail = formData.get("goaldetail") || "";
+
     var format = formData.get("format") || "No preference";
     var frequency = formData.get("frequency") || "No preference";
     var sessionlength = formData.get("sessionlength") || "No preference";
     var startdate = formData.get("startdate") || "";
     var availability = formData.get("availability") || "";
-    var teacherpref = formData.get("teacherpref") || "No preference";
-    var langmix = formData.get("langmix") || "No preference";
-    var learningstyle = formData.get("learningstyle") || "";
+    var sessiontime = formData.get("sessiontime") || "No preference";
+
     var rateagreement = formData.get("rateagreement") || "";
     var budgetrange = formData.get("budgetrange") || "";
+
     var paymentmethod = formData.get("paymentmethod") || "No preference";
-    var paymenttiming = formData.get("paymenttiming") || "No preference";
+    var paymentterms = formData.get("paymentterms") || "No preference";
     var termsAgreed = formData.get("terms") ? "Yes" : "No";
 
     var subject =
@@ -63,27 +66,24 @@ document.addEventListener("DOMContentLoaded", function () {
       "City / area: " + cityarea,
       "",
       "Current German level: " + currentlevel,
-      "Prior study: " + priorstudy,
-      "Location: " + location,
+      "Previous school: " + previouschool,
+      "Currently in PH?: " + location,
       "",
       "Goal(s): " + goals,
-      "Exam target: " + examtarget,
+      "Target exam: " + targetexam,
       "Goal details: " + goaldetail,
       "",
       "Preferred format: " + format,
       "Preferred frequency: " + frequency,
       "Preferred session length: " + sessionlength,
       "Preferred start date: " + startdate,
-      "Availability: " + availability,
+      "Days available: " + availability,
+      "Preferred session time: " + sessiontime,
       "",
-      "Teacher preference: " + teacherpref,
-      "Language mix preference: " + langmix,
-      "Notes for teacher: " + learningstyle,
-      "",
-      "Amenable to teacher rate: " + rateagreement,
+      "Amenable to hourly rate: " + rateagreement,
       "Budget range: " + budgetrange,
-      "Preferred payment method: " + paymentmethod,
-      "Preferred payment arrangement: " + paymenttiming,
+      "Payment method: " + paymentmethod,
+      "Payment terms: " + paymentterms,
       "",
       "Agreed to declaration: " + termsAgreed,
       "",
