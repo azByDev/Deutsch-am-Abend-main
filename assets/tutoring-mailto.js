@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var frequency = formData.get("frequency") || "No preference";
     var sessionlength = formData.get("sessionlength") || "No preference";
     var startdate = formData.get("startdate") || "";
-    var availability = formData.get("availability") || "";
+    var availability = formData.get("days") || "";
     var sessiontime = formData.get("sessiontime") || "No preference";
 
     var rateagreement = formData.get("rateagreement") || "";
