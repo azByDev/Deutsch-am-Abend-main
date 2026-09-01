@@ -99,9 +99,9 @@ document.addEventListener("DOMContentLoaded", function () {
         if (data.success) {
           showFormStatus(
             "success",
-            "Thanks! Your registration has been sent. We'll get back to you at " +
+            "Thank you! Your registration has been successfully submitted. We'll be in touch within 24-48 hours " +
               email +
-              " soon.",
+              "with your confirmation.",
           );
           form.reset();
         } else {

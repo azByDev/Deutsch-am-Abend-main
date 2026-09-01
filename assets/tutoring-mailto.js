@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (data.success) {
           showFormStatus(
             "success",
-            "Thanks! Your tutoring registration has been sent. We'll get back to you at " +
+            "Thank you! Your tutoring inquiry has been sent. We'll get back to you at " +
               email +
               " soon.",
           );
