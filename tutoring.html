@@ -510,24 +510,26 @@
                 <div class="field">
                   <label for="examtarget"
                     >For German Language Exam Certification: which exam, and
-                    target date?</label
+                    target date?<span class="required-mark">*</span></label
                   >
                   <input
                     type="text"
                     id="examtarget"
                     name="examtarget"
                     placeholder="e.g. Goethe-Zertifikat B1, October 2027"
+                    required
                   />
                 </div>
                 <div class="field">
                   <label for="goaldetail"
                     >Tell us more about what you want to get out of these
-                    lessons</label
+                    lessons<span class="required-mark">*</span></label
                   >
                   <textarea
                     id="goaldetail"
                     name="goaldetail"
                     placeholder="e.g. specific weak points, an upcoming trip, a job interview, a topic you want to work through..."
+                    required
                   ></textarea>
                 </div>
               </fieldset>
@@ -578,13 +580,14 @@
                 <div class="field">
                   <label for="budgetrange"
                     >Your budget range per hour for the 1-on-1 sessions, it will
-                    help us match you with a suitable teacher.</label
+                    help us match you with a suitable teacher.<span class="required-mark">*</span></label
                   >
                   <input
                     type="text"
                     id="budgetrange"
                     name="budgetrange"
                     placeholder="e.g. up to ₱800/hour"
+                    required
                   />
                 </div>
               </fieldset>
@@ -620,10 +623,10 @@
                     </select>
                   </div>
                   <div class="field">
-                    <label for="paymenttiming"
-                      >Preferred payment arrangement</label
+                    <label for="paymentarrangement"
+                      >Preferred payment arrangement<span class="required-mark">*</span></label
                     >
-                    <select id="paymenttiming" name="paymenttiming">
+                    <select id="paymentarrangement" name="paymentarrangement" required>
                       <option value="">Select arrangement</option>
                       <option>Prepaid package (2 weeks of sessions)</option>
                       <option>Prepaid package (1 month of sessions)</option>
@@ -642,12 +645,12 @@
                 >
               </div>
 
-              <div class="form-foot">
+              <!-- <div class="form-foot">
                 <p class="form-note">
                   Pressing the button will open your email app with this
                   information pre-filled. Just press Send there to complete your
                   Inquiry.
-                </p>
+                </p> -->
                 <button type="submit" class="btn btn-primary">
                   Submit Inquiry
                 </button>
