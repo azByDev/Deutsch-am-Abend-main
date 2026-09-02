@@ -30,26 +30,20 @@ document.addEventListener("DOMContentLoaded", function () {
     var email = formData.get("email") || "";
     var phone = formData.get("phone") || "";
     var cityarea = formData.get("cityarea") || "";
-
     var currentlevel = formData.get("currentlevel") || "Not specified";
     var previouschool = formData.get("previouschool") || "";
     var location = formData.getAll("location").join(", ") || "Not specified";
-
     var goals = formData.getAll("goal").join(", ") || "Not specified";
     var targetexam = formData.get("targetexam") || "";
     var goaldetail = formData.get("goaldetail") || "";
-
     var format = formData.get("format") || "No preference";
     var frequency = formData.get("frequency") || "No preference";
     var sessionlength = formData.get("sessionlength") || "No preference";
     var startdate = formData.get("startdate") || "";
-
     var availability = formData.getAll("days").join(", ") || "Not specified";
     var sessiontime = formData.get("sessiontime") || "No preference";
-
     var rateagreement = formData.get("rateagreement") || "";
     var budgetrange = formData.get("budgetrange") || "";
-
     var paymentmethod = formData.get("paymentmethod") || "No preference";
     var paymentterms = formData.get("paymentterms") || "No preference";
     var termsAgreed = formData.get("terms") ? "Yes" : "No";
@@ -77,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
       "Target exam: " + targetexam,
       "Goal details: " + goaldetail,
       "",
-      "Preferrences for tutoring sessions:",
+      "Preferences for tutoring sessions:",
       "----------------------------------",
       "",
       "Format: " + format,

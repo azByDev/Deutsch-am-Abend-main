@@ -54,6 +54,9 @@ document.addEventListener("DOMContentLoaded", function () {
       "Phone: " + phone,
       "Date of birth: " + dob,
       "",
+      "Preferences for tutoring session Test:",
+      "----------------------------------",
+      "",
       "Address:",
       street + " " + housenumber,
       postalcode + " " + city,
@@ -99,9 +102,9 @@ document.addEventListener("DOMContentLoaded", function () {
         if (data.success) {
           showFormStatus(
             "success",
-            "Thank you! Your registration has been successfully submitted. We'll be in touch within 24-48 hours " +
+            "Thank you! Your registration has been successfully submitted. We'll be in touch within 24-48 hours at " +
               email +
-              "with your confirmation.",
+              " with your confirmation.",
           );
           form.reset();
         } else {
