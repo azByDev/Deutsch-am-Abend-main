@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var currentlevel = formData.get("currentlevel") || "Not specified";
     var previouschool = formData.get("previouschool") || "";
-    var location = formData.get("location") || "Yes" : "No";
+    var location = formData.getAll("location").join(", ") || "Not specified";
 
     var goals = formData.getAll("goal").join(", ") || "Not specified";
     var targetexam = formData.get("targetexam") || "";
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
       "City / area: " + cityarea,
       "",
       "Information:",
-      "-----------------------------------",
+      "----------------------------------",
       "",
       "Current German level: " + currentlevel,
       "Previous school: " + previouschool,
@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
       "Goal details: " + goaldetail,
       "",
       "Preferrences for tutoring sessions:",
-      "-----------------------------------",
+      "----------------------------------",
       "",
       "Format: " + format,
       "Frequency: " + frequency,
