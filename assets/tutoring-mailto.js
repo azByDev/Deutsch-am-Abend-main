@@ -12,6 +12,30 @@
 var EMAIL_TO = "info.deutschamabend@gmail.com";
 var WEB3FORMS_ACCESS_KEY = "340f17bc-9b00-4aad-8212-6674838e62cd";
 
+var EMAILJS_SERVICE_ID = "service_g4yj10u"; // ← same Service ID as other forms
+var EMAILJS_TEMPLATE_ID = "template_tevvuyxq"; // ← a template written for tutoring
+var EMAILJS_PUBLIC_KEY = "2gmqT7hGWD_W4y83O"; // ← same Public Key as other forms
+
+function sendTutoringConfirmationEmail(toEmail, toName) {
+  return fetch("https://api.emailjs.com/api/v1.0/email/send", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      service_id: EMAILJS_SERVICE_ID,
+      template_id: EMAILJS_TEMPLATE_ID,
+      user_id: EMAILJS_PUBLIC_KEY,
+      template_params: {
+        to_email: toEmail,
+        to_name: toName,
+      },
+    }),
+  }).then(function (res) {
+    if (!res.ok) {
+      throw new Error("EmailJS request failed: " + res.status);
+    }
+  });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   var form = document.getElementById("tutoring-form");
   if (!form) return;
@@ -62,7 +86,6 @@ document.addEventListener("DOMContentLoaded", function () {
       "",
       "Information:",
       "----------------------------------",
-      "",
       "Current German level: " + currentlevel,
       "Previous school: " + previouschool,
       "Currently in PH?: " + location,
@@ -73,12 +96,11 @@ document.addEventListener("DOMContentLoaded", function () {
       "",
       "Preferences for tutoring sessions:",
       "----------------------------------",
-      "",
       "Format: " + format,
       "Frequency: " + frequency,
       "Session length: " + sessionlength,
       "Start date: " + startdate,
-      "Days available: " + availability,
+      "Availability: " + availability,
       "Session time: " + sessiontime,
       "",
       "Amenable to hourly rate: " + rateagreement,
@@ -123,6 +145,13 @@ document.addEventListener("DOMContentLoaded", function () {
               email +
               " soon.",
           );
+          sendTutoringConfirmationEmail(
+            email,
+            firstname + " " + lastname,
+          ).catch(function (err) {
+            console.error("Confirmation email failed:", err);
+          });
+
           form.reset();
         } else {
           showFormStatus(
