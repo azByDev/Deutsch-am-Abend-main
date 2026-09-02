@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (!form.checkValidity()) {
       form.reportValidity();
-      return;s
+      return;
     }
 
     var formData = new FormData(form);
@@ -68,6 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
       "",
       "Information:",
       "-----------------------------------",
+      "",
       "Current German level: " + currentlevel,
       "Previous school: " + previouschool,
       "Currently in PH?: " + location,
