@@ -31,6 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var email = formData.get("email") || "";
     var phone = formData.get("phone") || "";
     var dob = formData.get("dob") || "";
+    var location = formData.getAll("location").join(", ") || "Not specified";
     var street = formData.get("street") || "";
     var housenumber = formData.get("housenumber") || "";
     var city = formData.get("city") || "";
@@ -89,8 +90,11 @@ document.addEventListener("DOMContentLoaded", function () {
         escapeHtml(dob) +
         "</p>",
 
-      "<p><b>Address:</b><br>" +
-        escapeHtml(street + " " + housenumber) +
+      "<p><b>Address:</b><br>" + "",
+
+      "Currently in PH?: " + location,
+
+      escapeHtml(street + " " + housenumber) +
         "<br>" +
         escapeHtml(postalcode + " " + city) +
         "<br>" +
