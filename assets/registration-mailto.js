@@ -37,8 +37,8 @@ document.addEventListener("DOMContentLoaded", function () {
     var city = formData.get("city") || "";
     var postalcode = formData.get("postalcode") || "";
     var country = formData.get("country") || "";
-    var course = formData.get("course") || "";
-    var priorlevel = formData.get("priorlevel") || "";
+    var course = formData.getAll("course").join(", ") || "";
+    var priorlevel = formData.get("priorlevel") || "Not specified";
     var schedule = formData.get("schedule") || "No preference";
     var goals = formData.get("goals") || "";
     var termsAgreed = formData.get("terms") ? "Yes" : "No";
@@ -46,79 +46,34 @@ document.addEventListener("DOMContentLoaded", function () {
     var subject =
       "Course Registration: " + course + " — " + firstname + " " + lastname;
 
-    // var bodyLines = [
-    //   "NEW COURSE REGISTRATION",
-    //   "========================",
-    //   "",
-    //   "Name: " + firstname + " " + lastname,
-    //   "Email: " + email,
-    //   "Phone: " + phone,
-    //   "Date of birth: " + dob,
-    //   "",
-    //   "Address:",
-    //   street + " " + housenumber,
-    //   postalcode + " " + city,
-    //   country,
-    //   "",
-    //   "Course selected: " + course,
-    //   "Prior German level: " + priorlevel,
-    //   "Preferred schedule: " + schedule,
-    //   "",
-    //   "Goals / questions:",
-    //   goals,
-    //   "",
-    //   "Agreed to Terms & Conditions: " + termsAgreed,
-    //   "",
-    //   "========================",
-    //   "Sent from the Deutsch am Abend website registration form.",
-    // ];
-
     var bodyLines = [
-      "<h2 style='margin:0 0 8px;'>New Course Registration</h2>",
-      "<hr style='border:none;border-top:2px solid #2D5016;margin:0 0 16px;'>",
-
-      "<p><b>Name:</b> " +
-        escapeHtml(firstname + " " + lastname) +
-        "<br>" +
-        "<b>Email:</b> " +
-        escapeHtml(email) +
-        "<br>" +
-        "<b>Phone:</b> " +
-        escapeHtml(phone) +
-        "<br>" +
-        "<b>Date of birth:</b> " +
-        escapeHtml(dob) +
-        "</p>",
-
-      "<p><b>Address:</b><br>" + "",
-
-      "Currently in PH?: " + location,
-
-      escapeHtml(street + " " + housenumber) +
-        "<br>" +
-        escapeHtml(postalcode + " " + city) +
-        "<br>" +
-        escapeHtml(country) +
-        "</p>",
-
-      "<p><b>Course selected:</b> " +
-        escapeHtml(course) +
-        "<br>" +
-        "<b>Prior German level:</b> " +
-        escapeHtml(priorlevel) +
-        "<br>" +
-        "<b>Preferred schedule:</b> " +
-        escapeHtml(schedule) +
-        "</p>",
-
-      "<p><b>Goals / questions:</b><br>" + escapeHtml(goals) + "</p>",
-
-      "<p><b>Agreed to Terms &amp; Conditions:</b> " +
-        escapeHtml(termsAgreed) +
-        "</p>",
-
-      "<hr style='border:none;border-top:1px solid #ccc;margin:16px 0 8px;'>",
-      "<p style='color:#888;font-size:12px;'>Sent from the Deutsch am Abend website registration form.</p>",
+      "NEW COURSE REGISTRATION",
+      "========================",
+      "",
+      "Name: " + firstname + " " + lastname,
+      "Email: " + email,
+      "Phone: " + phone,
+      "Date of birth: " + dob,
+      "",
+      "Location: " + location,
+      "Address:",
+      street + " " + housenumber,
+      postalcode + " " + city,
+      country,
+      "",
+      "Information:",
+      "----------------------------------",
+      "Course selected: " + course,
+      "Prior German level: " + priorlevel,
+      "Preferred schedule: " + schedule,
+      "",
+      "Goals / questions:",
+      goals,
+      "",
+      "Agreed to Terms & Conditions: " + termsAgreed,
+      "",
+      "========================",
+      "Sent from the Deutsch am Abend website registration form.",
     ];
 
     var body = bodyLines.join("");
