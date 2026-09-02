@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var currentlevel = formData.get("currentlevel") || "Not specified";
     var previouschool = formData.get("previouschool") || "";
-    var location = formData.get("location") || "No";
+    var location = formData.get("location") || "Yes" : "No";
 
     var goals = formData.getAll("goal").join(", ") || "Not specified";
     var targetexam = formData.get("targetexam") || "";
@@ -43,7 +43,8 @@ document.addEventListener("DOMContentLoaded", function () {
     var frequency = formData.get("frequency") || "No preference";
     var sessionlength = formData.get("sessionlength") || "No preference";
     var startdate = formData.get("startdate") || "";
-    var availability = formData.get("days") || "";
+
+    var availability = formData.getAll("days").join(", ") || "Not specified";
     var sessiontime = formData.get("sessiontime") || "No preference";
 
     var rateagreement = formData.get("rateagreement") || "";
@@ -65,6 +66,9 @@ document.addEventListener("DOMContentLoaded", function () {
       "Phone: " + phone,
       "City / area: " + cityarea,
       "",
+
+      "Information:",
+      "-----------------------------------",
       "Current German level: " + currentlevel,
       "Previous school: " + previouschool,
       "Currently in PH?: " + location,
@@ -73,12 +77,16 @@ document.addEventListener("DOMContentLoaded", function () {
       "Target exam: " + targetexam,
       "Goal details: " + goaldetail,
       "",
-      "Preferred format: " + format,
-      "Preferred frequency: " + frequency,
-      "Preferred session length: " + sessionlength,
-      "Preferred start date: " + startdate,
+
+      "Preferrences for tutoring sessions:",
+      "-----------------------------------",
+      "",
+      "Format: " + format,
+      "Frequency: " + frequency,
+      "Session length: " + sessionlength,
+      "Start date: " + startdate,
       "Days available: " + availability,
-      "Preferred session time: " + sessiontime,
+      "Session time: " + sessiontime,
       "",
       "Amenable to hourly rate: " + rateagreement,
       "Budget range: " + budgetrange,
