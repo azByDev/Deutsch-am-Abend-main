@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teacher Availability Registration | Deutsch am Abend</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <!-- <link rel="stylesheet" href="assets/css/styles.css" /> -->
+    <style>
+      :root {
+        --cream: #fbf7ef;
+        --forest: #2d5016;
+        --forest-dark: #1f3810;
+        --orange: #ff751f;
+        --orange-dark: #e05e10;
+        --ink: #2a2a26;
+        --line: #e3ddce;
+        --heading: "Crimson Text", serif;
+        --body: "Inter", sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--cream);
+        font-family: var(--body);
+        color: var(--ink);
+        line-height: 1.55;
+        padding: 40px 16px 80px;
+      }
+      .form-shell {
+        max-width: 720px;
+        margin: 0 auto;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 40px clamp(20px, 5vw, 48px);
+        box-shadow: 0 2px 18px rgba(45, 80, 22, 0.06);
+      }
+      .form-header {
+        text-align: center;
+        margin-bottom: 32px;
+      }
+      .form-header h1 {
+        font-family: var(--heading);
+        font-size: 2rem;
+        color: var(--forest);
+        margin: 0 0 8px;
+      }
+      .form-header p {
+        margin: 0;
+        color: #5a5a52;
+        font-size: 0.98rem;
+      }
+      fieldset {
+        border: none;
+        border-top: 1px solid var(--line);
+        padding: 24px 0 4px;
+        margin: 0 0 8px;
+      }
+      fieldset:first-of-type {
+        border-top: none;
+        padding-top: 0;
+      }
+      legend {
+        font-family: var(--heading);
+        font-weight: 600;
+        font-size: 1.2rem;
+        color: var(--forest);
+        padding: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+      legend .num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: var(--orange);
+        color: #fff;
+        font-family: var(--body);
+        font-size: 0.85rem;
+        font-weight: 700;
+      }
+      label {
+        display: block;
+        font-weight: 600;
+        font-size: 0.92rem;
+        margin-bottom: 6px;
+        color: var(--ink);
+      }
+      .hint {
+        font-weight: 400;
+        font-size: 0.82rem;
+        color: #7a7a70;
+        margin-top: -4px;
+        margin-bottom: 6px;
+      }
+      input[type="text"],
+      input[type="email"],
+      input[type="tel"],
+      input[type="date"],
+      select,
+      textarea {
+        width: 100%;
+        padding: 11px 13px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        font-family: var(--body);
+        font-size: 0.95rem;
+        color: var(--ink);
+        background: #fdfcf9;
+        margin-bottom: 18px;
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--forest);
+        box-shadow: 0 0 0 3px rgba(45, 80, 22, 0.12);
+      }
+      textarea {
+        resize: vertical;
+        min-height: 90px;
+      }
+
+      .field-row {
+        display: flex;
+        gap: 16px;
+      }
+      .field-row > div {
+        flex: 1;
+      }
+
+      .checkbox-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+        margin-bottom: 18px;
+      }
+      .radio-card {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px 12px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        background: #fdfcf9;
+        transition:
+          border-color 0.15s,
+          background 0.15s;
+      }
+      .radio-card:hover {
+        border-color: var(--forest);
+      }
+      .radio-card input {
+        width: auto;
+        margin: 0;
+        accent-color: var(--forest);
+      }
+      .radio-card.checked {
+        border-color: var(--forest);
+        background: #f2f6ec;
+      }
+
+      .terms-check {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 0.88rem;
+        color: #4a4a44;
+        margin: 20px 0 24px;
+      }
+      .terms-check input {
+        margin-top: 3px;
+        accent-color: var(--forest);
+      }
+
+      button[type="submit"] {
+        width: 100%;
+        padding: 14px;
+        background: var(--orange);
+        color: #fff;
+        border: none;
+        border-radius: 9px;
+        font-family: var(--body);
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      button[type="submit"]:hover {
+        background: var(--orange-dark);
+      }
+      button[type="submit"]:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      #form-status {
+        margin-top: 16px;
+        padding: 12px 14px;
+        border-radius: 8px;
+        font-size: 0.92rem;
+        display: none;
+      }
+      #form-status.success {
+        display: block;
+        background: #eef5e6;
+        color: var(--forest-dark);
+        border: 1px solid #c8dcb5;
+      }
+      #form-status.error {
+        display: block;
+        background: #fdecec;
+        color: #9c2b2b;
+        border: 1px solid #f2c4c4;
+      }
+
+      @media (max-width: 520px) {
+        .field-row {
+          flex-direction: column;
+          gap: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <form class="form-shell" id="availability-form">
+      <div class="form-header">
+        <h1>Teacher Availability Form 2026</h1>
+        <p>
+          Let us know which upcoming courses and time slots you're available to
+          teach. We'll match this against demand and confirm your assignments
+          directly.
+        </p>
+      </div>
+
+      <fieldset>
+        <legend><span class="num">1</span>Your Details</legend>
+
+        <div class="field-row">
+          <div>
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" name="fullName" required />
+          </div>
+          <div>
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required />
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div>
+            <label for="phone">Phone / WhatsApp Number</label>
+            <input type="tel" id="phone" name="phone" required />
+          </div>
+          <div>
+            <label for="preferredContact">Preferred Contact Method</label>
+            <select id="preferredContact" name="preferredContact" required>
+              <option value="">Select one</option>
+              <option value="Email">Email</option>
+              <option value="WhatsApp">WhatsApp</option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="num">2</span>Levels You Can Teach</legend>
+        <div class="hint">
+          Select all levels you're qualified and comfortable teaching.
+        </div>
+        <div class="checkbox-grid" id="levelsGrid">
+          <label class="radio-card"
+            ><input type="checkbox" name="levels" value="A1" /> A1</label
+          >
+          <label class="radio-card"
+            ><input type="checkbox" name="levels" value="A2" /> A2</label
+          >
+          <label class="radio-card"
+            ><input type="checkbox" name="levels" value="B1" /> B1</label
+          >
+          <label class="radio-card"
+            ><input type="checkbox" name="levels" value="B2" /> B2</label
+          >
+          <label class="radio-card"
+            ><input type="checkbox" name="levels" value="Exam Prep" /> Exam Prep
+            (Goethe-Zertifikat)</label
+          >
+          <label class="radio-card"
+            ><input type="checkbox" name="levels" value="Einzelunterricht" />
+            Private / Einzelunterricht</label
+          >
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>
+          <span class="num">3</span>Availability for Upcoming Term
+        </legend>
+
+        <label for="startDate">Available From</label>
+        <input type="date" id="startDate" name="startDate" required />
+
+        <div class="hint">Which days of the week work for you?</div>
+        <div class="checkbox-grid" id="daysGrid">
+          <label class="radio-card"
+            ><input type="checkbox" name="days" value="Monday" /> Monday</label
+          >
+          <label class="radio-card"
+            ><input type="checkbox" name="days" value="Tuesday" />
+            Tuesday</label
+          >
+          <label class="radio-card"
+            ><input type="checkbox" name="days" value="Wednesday" />
+            Wednesday</label
+          >
+          <label class="radio-card"
+            ><input type="checkbox" name="days" value="Thursday" />
+            Thursday</label
+          >
+          <label class="radio-card"
+            ><input type="checkbox" name="days" value="Friday" /> Friday</label
+          >
+          <label class="radio-card"
+            ><input type="checkbox" name="days" value="Saturday" />
+            Saturday</label
+          >
+          <label class="radio-card"
+            ><input type="checkbox" name="days" value="Sunday" /> Sunday</label
+          >
+        </div>
+
+        <div class="hint">Which time slots generally work for you?</div>
+        <div class="checkbox-grid" id="timeGrid">
+          <label class="radio-card"
+            ><input
+              type="checkbox"
+              name="timeSlots"
+              value="Morning (before 12pm)"
+            />
+            Morning - starting at 8am</label
+          >
+          <label class="radio-card"
+            ><input
+              type="checkbox"
+              name="timeSlots"
+              value="Afternoon (12–5pm)"
+            />
+            Afternoon - starting at 13:00pm</label
+          >
+          <label class="radio-card"
+            ><input type="checkbox" name="timeSlots" value="Evening (5–9pm)" />
+            Evening - starting at 18:00pm</label
+          >
+          <label class="radio-card"
+            ><input type="checkbox" name="timeSlots" value="Flexible" />
+            Flexible</label
+          >
+        </div>
+
+        <div class="hint">
+          How many courses/classes would you like to teach?
+        </div>
+        <div class="checkbox-grid" id="timeGrid">
+          <label class="radio-card"
+            ><input
+              type="checkbox"
+              name="NumberOfCourses"
+              value="1 course/class"
+            />
+            1 class</label
+          >
+          <label class="radio-card"
+            ><input
+              type="checkbox"
+              name="NumberOfCourses"
+              value="2 courses/classes"
+            />
+            2 classes</label
+          >
+          <label class="radio-card"
+            ><input
+              type="checkbox"
+              name="NumberOfCourses"
+              value="3 courses/classes"
+            />
+            3 classes</label
+          >
+        </div>
+
+        <label for="hoursPerDay">Approximate Hours Available (per day)</label>
+        <select id="hoursPerDay" name="hoursPerDay" required>
+          <option value="">Select one</option>
+          <option value="less than 2 hours">less than 2 hours</option>
+          <option value="2 hours">2 hours</option>
+          <option value="3 hours">3 hours</option>
+          <option value="4 hours">4 hours</option>
+          <option value="5+ hours">5+ hours</option>
+        </select>
+
+        <label for="hoursPerWeek">Approximate Hours Available (per Week)</label>
+        <select id="hoursPerWeek" name="hoursPerWeek" required>
+          <option value="">Select one</option>
+          <option value="less than 10 hours">less than 10 hours</option>
+          <option value="10–20 hours">10–20 hours</option>
+          <option value="20+ hours">20+ hours</option>
+        </select>
+
+        <label for="FrequencyPerWeek">Class/Course Frequency (per Week)</label>
+        <select id="FrequencyPerWeek" name="FrequencyPerWeek" required>
+          <option value="">Select one</option>
+          <option value="1">1 time per week</option>
+          <option value="2">2x /week</option>
+          <option value="3">3x /week</option>
+          <option value="4">4x /week</option>
+          <option value="5">5x /week</option>
+        </select>
+
+        <label for="format">Preferred Class Format</label>
+        <select id="format" name="format" required>
+          <option value="">Select one</option>
+          <option value="In-person">In-person</option>
+          <option value="Online">Online</option>
+          <option value="Hybrid / No preference">Hybrid / No preference</option>
+        </select>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="num">4</span>Additional Notes</legend>
+        <label for="notes"
+          >Anything else we should know? (e.g. specific weeks unavailable,
+          upcoming travel, course type preferences)</label
+        >
+        <textarea id="notes" name="notes" placeholder="Optional"></textarea>
+      </fieldset>
+
+      <label class="terms-check">
+        <input
+          type="checkbox"
+          id="confirmAccuracy"
+          name="confirmAccuracy"
+          required
+        />
+        I confirm this availability is accurate to the best of my knowledge, and
+        I understand Deutsch am Abend will reach out to confirm specific course
+        assignments before finalizing my schedule.
+      </label>
+
+      <button type="submit" id="submitBtn">Submit Availability</button>
+      <div id="form-status"></div>
+    </form>
+
+    <script>
+      // Visual feedback for checked radio-cards
+      document
+        .querySelectorAll(".radio-card input[type=checkbox]")
+        .forEach(function (cb) {
+          cb.addEventListener("change", function () {
+            this.closest(".radio-card").classList.toggle(
+              "checked",
+              this.checked,
+            );
+          });
+        });
+
+      const form = document.getElementById("availability-form");
+      const statusEl = document.getElementById("form-status");
+      const submitBtn = document.getElementById("submitBtn");
+
+      // ---- CONFIG: replace with your actual keys ----
+      const WEB3FORMS_ACCESS_KEY = "YOUR_WEB3FORMS_ACCESS_KEY";
+      const EMAILJS_PUBLIC_KEY = "YOUR_EMAILJS_PUBLIC_KEY";
+      const EMAILJS_SERVICE_ID = "YOUR_EMAILJS_SERVICE_ID";
+      const EMAILJS_TEMPLATE_ID =
+        "YOUR_EMAILJS_TEMPLATE_ID_TEACHER_AVAILABILITY";
+      // -------------------------------------------------
+
+      if (window.emailjs && EMAILJS_PUBLIC_KEY !== "YOUR_EMAILJS_PUBLIC_KEY") {
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+      }
+
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function getCheckedValues(name) {
+        return Array.from(
+          form.querySelectorAll(`input[name="${name}"]:checked`),
+        ).map((el) => el.value);
+      }
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        statusEl.className = "";
+        statusEl.textContent = "";
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Submitting…";
+
+        const data = {
+          fullName: form.fullName.value.trim(),
+          email: form.email.value.trim(),
+          phone: form.phone.value.trim(),
+          preferredContact: form.preferredContact.value,
+          levels: getCheckedValues("levels"),
+          startDate: form.startDate.value,
+          days: getCheckedValues("days"),
+          timeSlots: getCheckedValues("timeSlots"),
+          NumberOfCourses: getCheckedValues("NumberOfCourses"),
+          hoursPerDay: form.hoursPerDay.value,
+          FrequencyPerWeek: form.FrequencyPerWeek.value,
+          format: form.format.value,
+          notes: form.notes.value.trim(),
+        };
+
+        if (
+          data.levels.length === 0 ||
+          data.days.length === 0 ||
+          data.timeSlots.length === 0 ||
+          data.NumberOfCourses.length === 0
+        ) {
+          statusEl.className = "error";
+          statusEl.textContent =
+            "Please select at least one level, day, time slot, and number of courses.";
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Submit Availability";
+          return;
+        }
+
+        const htmlSummary = `
+      <h2>New Teacher Availability Registration</h2>
+      <p><strong>Name:</strong> ${escapeHtml(data.fullName)}</p>
+      <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
+      <p><strong>Phone:</strong> ${escapeHtml(data.phone)}</p>
+      <p><strong>Preferred Contact:</strong> ${escapeHtml(data.preferredContact)}</p>
+      <p><strong>Levels:</strong> ${escapeHtml(data.levels.join(", "))}</p>
+      <p><strong>Available From:</strong> ${escapeHtml(data.startDate)}</p>
+      <p><strong>Days:</strong> ${escapeHtml(data.days.join(", "))}</p>
+      <p><strong>Time Slots:</strong> ${escapeHtml(data.timeSlots.join(", "))}</p>
+      <p><strong>Number of Courses:</strong> ${escapeHtml(data.NumberOfCourses.join(", "))}</p>
+      <p><strong>Hours/day:</strong> ${escapeHtml(data.hoursPerDay)}</p>
+      <p><strong>Frequency/week:</strong> ${escapeHtml(data.FrequencyPerWeek)}</p>
+      <p><strong>Format:</strong> ${escapeHtml(data.format)}</p>
+      <p><strong>Notes:</strong> ${escapeHtml(data.notes || "—")}</p>
+    `;
+
+        try {
+          const res = await fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              access_key: WEB3FORMS_ACCESS_KEY,
+              subject: `Teacher Availability: ${data.fullName}`,
+              from_name: "Deutsch am Abend — Teacher Availability Form",
+              message: htmlSummary,
+              ...data,
+            }),
+          });
+          const result = await res.json();
+
+          if (result.success) {
+            statusEl.className = "success";
+            statusEl.textContent =
+              "Thank you! Your availability has been submitted. We'll confirm your course assignments soon.";
+            form.reset();
+            document
+              .querySelectorAll(".radio-card.checked")
+              .forEach((el) => el.classList.remove("checked"));
+
+            if (
+              window.emailjs &&
+              EMAILJS_PUBLIC_KEY !== "YOUR_EMAILJS_PUBLIC_KEY"
+            ) {
+              emailjs
+                .send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                  to_email: data.email,
+                  to_name: data.fullName,
+                  levels: data.levels.join(", "),
+                  start_date: data.startDate,
+                })
+                .catch((err) =>
+                  console.warn("EmailJS auto-reply failed:", err),
+                );
+            }
+          } else {
+            throw new Error(result.message || "Submission failed.");
+          }
+        } catch (err) {
+          statusEl.className = "error";
+          statusEl.textContent =
+            "Something went wrong submitting your form. Please try again or email us directly at info.deutschamabend@gmail.com.";
+          console.error(err);
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Submit Availability";
+        }
+      });
+    </script>
+  </body>
+</html>
