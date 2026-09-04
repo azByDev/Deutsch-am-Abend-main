@@ -56,7 +56,10 @@ form.addEventListener("submit", async function (e) {
     startDate: form.startDate.value,
     days: getCheckedValues("days"),
     timeSlots: getCheckedValues("timeSlots"),
+    numberOfCourses: getCheckedValues("numberOfCourses"),
+    hoursPerDay: form.hoursPerDay.value,
     hoursPerWeek: form.hoursPerWeek.value,
+    classFrequencyPerWeek: form.classFrequencyPerWeek.value,
     format: form.format.value,
     notes: form.notes.value.trim(),
   };
@@ -84,7 +87,10 @@ form.addEventListener("submit", async function (e) {
       <p><strong>Available From:</strong> ${escapeHtml(data.startDate)}</p>
       <p><strong>Days:</strong> ${escapeHtml(data.days.join(", "))}</p>
       <p><strong>Time Slots:</strong> ${escapeHtml(data.timeSlots.join(", "))}</p>
+      <p><strong>Number of Courses:</strong> ${escapeHtml(data.numberOfCourses)}</p>
+      <p><strong>Hours/Day:</strong> ${escapeHtml(data.hoursPerDay)}</p>
       <p><strong>Hours/Week:</strong> ${escapeHtml(data.hoursPerWeek)}</p>
+       <p><strong>Class Frequency/Week:</strong> ${escapeHtml(data.classFrequencyPerWeek)}</p>
       <p><strong>Format:</strong> ${escapeHtml(data.format)}</p>
       <p><strong>Notes:</strong> ${escapeHtml(data.notes || "—")}</p>
     `;
