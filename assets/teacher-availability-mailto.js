@@ -46,6 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
       phone: form.phone.value.trim(),
       preferredContact: form.preferredContact.value,
       levels: getCheckedValues("levels"),
+      HonoraryFee: form.HonoraryFee.value,
       startDate: form.startDate.value,
       days: getCheckedValues("days"),
       timeSlots: getCheckedValues("timeSlots"),
@@ -61,11 +62,12 @@ document.addEventListener("DOMContentLoaded", function () {
       data.levels.length === 0 ||
       data.days.length === 0 ||
       data.timeSlots.length === 0 ||
-      data.numberOfCourses.length === 0
+      data.numberOfCourses.length === 0 ||
+      data.HonoraryFee === ""
     ) {
       statusEl.className = "error";
       statusEl.textContent =
-        "Please select at least one level, day, time slot, and number of courses.";
+        "Please select at least one level, day, time slot, and number of courses, and provide your honorarium fee.";
       submitBtn.disabled = false;
       submitBtn.textContent = "Submit Availability";
       return;
@@ -84,6 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
           Phone: data.phone,
           "Preferred Contact Method": data.preferredContact,
           "Levels They Can Teach": data.levels.join(", "),
+          "Honorarium Fee": data.HonoraryFee,
           "Available From": data.startDate,
           "Available Days": data.days.join(", "),
           "Preferred Time Slots": data.timeSlots.join(", "),
