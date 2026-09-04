@@ -79,7 +79,20 @@ document.addEventListener("DOMContentLoaded", function () {
           access_key: WEB3FORMS_ACCESS_KEY,
           subject: `Teacher Availability: ${data.fullName}`,
           from_name: "Deutsch am Abend — Teacher Availability Form",
-          ...data,
+          "Full Name": data.fullName,
+          Email: data.email,
+          Phone: data.phone,
+          "Preferred Contact Method": data.preferredContact,
+          "Levels They Can Teach": data.levels.join(", "),
+          "Available From": data.startDate,
+          "Available Days": data.days.join(", "),
+          "Preferred Time Slots": data.timeSlots.join(", "),
+          "Number of Courses": data.numberOfCourses.join(", "),
+          "Hours Available Per Day": data.hoursPerDay,
+          "Hours Available Per Week": data.hoursPerWeek,
+          "Class Frequency Per Week": data.frequencyPerWeek,
+          "Preferred Format": data.format,
+          "Additional Notes": data.notes || "—",
         }),
       });
       const result = await res.json();
@@ -112,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
     } catch (err) {
       statusEl.className = "error";
       statusEl.textContent =
-        "Something went wrong submitting your form. Please try again or email us directly at info.deutschamabend@gmail.com.";
+        "Something went wrong submitting your form. Please try again or email us directly at info@deutschamabend.org.";
       console.error(err);
     } finally {
       submitBtn.disabled = false;
