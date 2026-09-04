@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const submitBtn = document.getElementById("submitBtn");
 
   // ---- CONFIG: replace with your actual keys ----
-  const WEB3FORMS_ACCESS_KEY = "YOUR_WEB3FORMS_ACCESS_KEY";
+  const WEB3FORMS_ACCESS_KEY = "2db60610-8381-4026-85f0-59b988a385b8";
   const EMAILJS_PUBLIC_KEY = "YOUR_EMAILJS_PUBLIC_KEY";
   const EMAILJS_SERVICE_ID = "YOUR_EMAILJS_SERVICE_ID";
   const EMAILJS_TEMPLATE_ID = "YOUR_EMAILJS_TEMPLATE_ID_TEACHER_AVAILABILITY";
