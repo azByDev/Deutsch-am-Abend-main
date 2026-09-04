@@ -27,15 +27,6 @@ document.addEventListener("DOMContentLoaded", function () {
     emailjs.init(EMAILJS_PUBLIC_KEY);
   }
 
-  function escapeHtml(str) {
-    return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
-
   function getCheckedValues(name) {
     return Array.from(
       form.querySelectorAll(`input[name="${name}"]:checked`),
@@ -80,24 +71,6 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    const htmlSummary = `
-      <h2>New Teacher Availability Registration</h2>
-      <p><strong>Name:</strong> ${escapeHtml(data.fullName)}</p>
-      <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
-      <p><strong>Phone:</strong> ${escapeHtml(data.phone)}</p>
-      <p><strong>Preferred Contact:</strong> ${escapeHtml(data.preferredContact)}</p>
-      <p><strong>Levels:</strong> ${escapeHtml(data.levels.join(", "))}</p>
-      <p><strong>Available From:</strong> ${escapeHtml(data.startDate)}</p>
-      <p><strong>Days:</strong> ${escapeHtml(data.days.join(", "))}</p>
-      <p><strong>Time Slots:</strong> ${escapeHtml(data.timeSlots.join(", "))}</p>
-      <p><strong>Number of Courses:</strong> ${escapeHtml(data.numberOfCourses.join(", "))}</p>
-      <p><strong>Hours/Day:</strong> ${escapeHtml(data.hoursPerDay)}</p>
-      <p><strong>Hours/Week:</strong> ${escapeHtml(data.hoursPerWeek)}</p>
-      <p><strong>Frequency/Week:</strong> ${escapeHtml(data.frequencyPerWeek)}</p>
-      <p><strong>Format:</strong> ${escapeHtml(data.format)}</p>
-      <p><strong>Notes:</strong> ${escapeHtml(data.notes || "—")}</p>
-    `;
-
     try {
       const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
@@ -106,7 +79,6 @@ document.addEventListener("DOMContentLoaded", function () {
           access_key: WEB3FORMS_ACCESS_KEY,
           subject: `Teacher Availability: ${data.fullName}`,
           from_name: "Deutsch am Abend — Teacher Availability Form",
-          message: htmlSummary,
           ...data,
         }),
       });
