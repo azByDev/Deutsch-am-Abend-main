@@ -322,13 +322,17 @@
                   />
                 </div>
                 <div class="field">
-                  <label for="schedule">Preferred schedule</label>
-                  <select id="schedule" name="schedule">
+                  <label for="preferredSchedule">Preferred schedule</label>
+                  <select id="preferredSchedule" name="schedule">
                     <option value="">No preference</option>
                     <option value="Morning">Morning class (08:00 - 11:00) </option>
                     <option value="Afternoon">Afternoon class (13:00 - 16:00)</option>
                     <option value="Evening">Evening class (18:00 - 21:00) </option>
                   </select>
+                  <p class="form-note" style="margin-top: 6px">
+                    Not sure what's available? Check the
+                    <a href="services.html#schedule" target="_blank" rel="noopener">current course schedule</a>.
+                  </p>
                 </div>
               </fieldset>
 
@@ -405,15 +409,15 @@
       (function () {
         var messages = {
           "A1 — Beginner":
-            "✓ Schedule confirmed — Sep 28 to Nov 27, 2026, Mon–Fri 18:00–21:00. A teacher is already assigned to this cohort.",
+            "✓ Schedule confirmed — Sep 28 to Nov 27, 2026. (Morning batch: 08:00 – 11:00 & Evening batch: 18:00 – 21:00)",
           "A2 — Elementary":
-            "This level doesn't have a confirmed teacher or schedule yet. Submitting this form adds you to our interest list — no payment is needed now, and we'll email you as soon as a cohort is ready to start.",
+            "This level doesn't have a confirmed schedule yet. Submitting this form adds you to our interest list — no payment is needed now, and we'll email you as soon as the next class is ready to begin.",
           "B1 — Intermediate":
-            "This level doesn't have a confirmed teacher or schedule yet. Submitting this form adds you to our interest list — no payment is needed now, and we'll email you as soon as a cohort is ready to start.",
+            "This level doesn't have a confirmed schedule yet. Submitting this form adds you to our interest list — no payment is needed now, and we'll email you as soon as the next class is ready to begin.",
           "B2 — Upper Intermediate":
-            "This level doesn't have a confirmed teacher or schedule yet. Submitting this form adds you to our interest list — no payment is needed now, and we'll email you as soon as a cohort is ready to start.",
+            "This level doesn't have a confirmed schedule yet. Submitting this form adds you to our interest list — no payment is needed now, and we'll email you as soon as the next class is ready to begin.",
           "Goethe-Zertifikat Exam Prep":
-            "This offering doesn't have a confirmed teacher or schedule yet. Submitting this form adds you to our interest list — no payment is needed now, and we'll email you as soon as a cohort is ready to start.",
+            "This offering doesn't have a confirmed schedule yet. Submitting this form adds you to our interest list — no payment is needed now, and we'll email you as soon as the next class is ready to begin.",
         };
         var note = document.getElementById("course-status-note");
         document.querySelectorAll('input[name="course"]').forEach(function (radio) {
