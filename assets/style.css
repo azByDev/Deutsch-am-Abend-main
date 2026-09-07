@@ -995,6 +995,7 @@ fieldset legend {
 }
 .status-badge {
   display: inline-block;
+  white-space: nowrap;
   margin-left: 0;
   margin-top: 6px;
   padding: 2px 8px;
