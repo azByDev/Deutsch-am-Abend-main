@@ -38,10 +38,9 @@ document.addEventListener("DOMContentLoaded", function () {
     var postalcode = formData.get("postalcode") || "";
     var country = formData.get("country") || "";
     var course = formData.getAll("course").join(", ") || "";
-    var courseformat =
-      formData.get("courseformat").get(", ") || "Not specified";
+    var courseformat = formData.get("courseformat") || "Not specified";
     var priorlevel = formData.get("priorlevel") || "Not specified";
-    var PreferredSchedule = formData.get("Schedule") || "No preference";
+    var PreferredSchedule = formData.get("schedule") || "No preference";
     var goals = formData.get("goals") || "";
     var termsAgreed = formData.get("terms") ? "Yes" : "No";
 
@@ -80,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
     ];
 
     var body = bodyLines.join("");
-    // var body = bodyLines.join("\n");
+    var body = bodyLines.join("\n");
 
     var submitBtn = form.querySelector('button[type="submit"]');
     if (submitBtn) {
@@ -177,41 +176,41 @@ function showFormStatus(type, message) {
   }
 })();
 
-function showFormStatus(type, message) {
-  var existingStatus = document.querySelector(".form-status");
-  if (existingStatus) {
-    existingStatus.remove();
-  }
+// function showFormStatus(type, message) {
+//   var existingStatus = document.querySelector(".form-status");
+//   if (existingStatus) {
+//     existingStatus.remove();
+//   }
 
-  var statusEl = document.createElement("div");
-  statusEl.className = "form-status " + type;
-  statusEl.textContent = message;
+//   var statusEl = document.createElement("div");
+//   statusEl.className = "form-status " + type;
+//   statusEl.textContent = message;
 
-  var form = document.getElementById("reg-form");
-  form.parentNode.insertBefore(statusEl, form);
-  statusEl.scrollIntoView({ behavior: "smooth", block: "center" });
-}
+//   var form = document.getElementById("reg-form");
+//   form.parentNode.insertBefore(statusEl, form);
+//   statusEl.scrollIntoView({ behavior: "smooth", block: "center" });
+// }
 
 // Pre-select course from query param if present (e.g. services.html?course=A1)
-(function () {
-  var params = new URLSearchParams(window.location.search);
-  var courseParam = params.get("course");
-  if (courseParam) {
-    var courseMap = {
-      A1: "A1 — Beginner",
-      A2: "A2 — Elementary",
-      B1: "B1 — Intermediate",
-      B2: "B2 — Upper Intermediate",
-      "Exam-Prep": "Goethe-Zertifikat Exam Prep",
-    };
-    var targetValue = courseMap[courseParam];
-    if (targetValue) {
-      var radio = document.querySelector(
-        'input[name="course"][value="' + targetValue + '"]',
-      );
-      if (radio) {
-        radio.checked = true;
-      }
-    }
-  }
-})();
+// (function () {
+//   var params = new URLSearchParams(window.location.search);
+//   var courseParam = params.get("course");
+//   if (courseParam) {
+//     var courseMap = {
+//       A1: "A1 — Beginner",
+//       A2: "A2 — Elementary",
+//       B1: "B1 — Intermediate",
+//       B2: "B2 — Upper Intermediate",
+//       "Exam-Prep": "Goethe-Zertifikat Exam Prep",
+//     };
+//     var targetValue = courseMap[courseParam];
+//     if (targetValue) {
+//       var radio = document.querySelector(
+//         'input[name="course"][value="' + targetValue + '"]',
+//       );
+//       if (radio) {
+//         radio.checked = true;
+//       }
+//     }
+//   }
+// })();
