@@ -39,10 +39,9 @@ document.addEventListener("DOMContentLoaded", function () {
     var country = formData.get("country") || "";
     var course = formData.getAll("course").join(", ") || "";
     var courseformat =
-      formData.get("courseformat").join(", ") || "Not specified";
+      formData.get("courseformat").get(", ") || "Not specified";
     var priorlevel = formData.get("priorlevel") || "Not specified";
-    var PreferredSchedule =
-      formData.get("preferredSchedule") || "No preference";
+    var PreferredSchedule = formData.get("Schedule") || "No preference";
     var goals = formData.get("goals") || "";
     var termsAgreed = formData.get("terms") ? "Yes" : "No";
 
@@ -81,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
     ];
 
     var body = bodyLines.join("");
-    var body = bodyLines.join("\n");
+    // var body = bodyLines.join("\n");
 
     var submitBtn = form.querySelector('button[type="submit"]');
     if (submitBtn) {
