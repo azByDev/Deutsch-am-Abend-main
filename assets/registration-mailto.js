@@ -41,7 +41,8 @@ document.addEventListener("DOMContentLoaded", function () {
     var courseformat =
       formData.get("courseformat").join(", ") || "Not specified";
     var priorlevel = formData.get("priorlevel") || "Not specified";
-    var schedule = formData.get("schedule") || "No preference";
+    var PreferredSchedule =
+      formData.get("preferredSchedule") || "No preference";
     var goals = formData.get("goals") || "";
     var termsAgreed = formData.get("terms") ? "Yes" : "No";
 
@@ -68,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
       "Course selected: " + course,
       "Course format: " + courseformat,
       "Prior German level: " + priorlevel,
-      "Preferred schedule: " + schedule,
+      "Preferred schedule: " + PreferredSchedule,
       "",
       "Goals / questions:",
       goals,
