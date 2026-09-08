@@ -10,7 +10,7 @@
  */
 
 var WEB3FORMS_ACCESS_KEY = "cd1b28ce-8440-4fd6-bc24-e3b728bb6cff";
-var EMAIL_TO = "info.deutschamabend@gmail.com";
+var EMAIL_TO = "registration@deutschamabend.org";
 
 document.addEventListener("DOMContentLoaded", function () {
   var form = document.getElementById("reg-form");
@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (data.success) {
           showFormStatus(
             "success",
-            "Thank you! Your registration has been successfully submitted. We'll be in touch within 24-48 hours at " +
+            "Thank you! Your registration has been successfully submitted. We'll be in touch within 1-2 business days at " +
               email +
               " with your confirmation.",
           );

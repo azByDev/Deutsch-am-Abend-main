@@ -9,7 +9,7 @@
  * access key. Set it below.
  */
 
-var EMAIL_TO = "info.deutschamabend@gmail.com";
+var EMAIL_TO = "registration@deutschamabend.org";
 var WEB3FORMS_ACCESS_KEY = "340f17bc-9b00-4aad-8212-6674838e62cd";
 
 var EMAILJS_SERVICE_ID = "service_g4yj10u"; // ← same Service ID as other forms

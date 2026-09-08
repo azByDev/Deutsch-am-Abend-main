@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function () {
     } catch (err) {
       statusEl.className = "error";
       statusEl.textContent =
-        "Something went wrong submitting your form. Please try again or email us directly at info@deutschamabend.org.";
+        "Something went wrong submitting your form. Please try again or email us directly at admin@deutschamabend.org.";
       console.error(err);
     } finally {
       submitBtn.disabled = false;

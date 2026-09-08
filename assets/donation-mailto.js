@@ -13,7 +13,7 @@
  * before — only the final "send" step has changed.
  */
 
-var DONATION_EMAIL_TO = "info.deutschamabend@gmail.com";
+var DONATION_EMAIL_TO = "registration@deutschamabend.org";
 var WEB3FORMS_ACCESS_KEY = "eee364cf-48ed-4a8a-a022-186cb653b2cf";
 
 document.addEventListener("DOMContentLoaded", function () {
