@@ -1160,6 +1160,27 @@ footer.site-footer {
   color: rgba(255, 255, 255, 0.5);
 }
 
+.footer-social {
+  display: flex;
+  gap: 14px;
+  margin-top: 18px;
+}
+.footer-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+.footer-social a:hover {
+  background: var(--orange);
+}
+
 /* CTA band */
 .cta-band {
   background: #2d5016;
