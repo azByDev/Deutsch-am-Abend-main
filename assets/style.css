@@ -1895,6 +1895,142 @@ footer.site-footer {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
 }
+*
+  ============================================================
+  Interactive
+  Contact
+  Form
+  Styles
+  ============================================================
+  */
+  .contact-grid-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 48px;
+  align-items: start;
+}
+@media (max-width: 840px) {
+  .contact-grid-layout {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+}
+.contact-form-shell {
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  padding: 36px clamp(20px, 4vw, 36px);
+  box-shadow: var(--shadow);
+}
+.contact-form-shell h2 {
+  font-size: 1.6rem;
+  margin-bottom: 8px;
+}
+.contact-form-shell p.subtitle {
+  color: var(--slate);
+  font-size: 0.95rem;
+  margin-bottom: 24px;
+}
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 540px) {
+  .form-row-2 {
+    grid-template-columns: 1fr;
+  }
+}
+.form-field {
+  margin-bottom: 18px;
+}
+.form-field label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--charcoal);
+  margin-bottom: 6px;
+}
+.form-field .req {
+  color: var(--orange);
+  margin-left: 2px;
+}
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  font-family: var(--body);
+  font-size: 0.95rem;
+  color: var(--charcoal);
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: 8px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: var(--orange);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 117, 31, 0.15);
+}
+.form-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Info Box */
+.info-box {
+  border: 1.5px solid var(--line);
+  border-left: 4px solid var(--orange);
+  border-radius: 10px;
+  background: var(--cream);
+  padding: 20px 24px;
+  margin: 0 0 24px;
+}
+.info-box h3 {
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+  color: var(--forest);
+}
+.info-box p {
+  font-size: 0.92rem;
+  color: var(--charcoal);
+  margin: 0;
+  line-height: 1.55;
+}
+.info-box.forest {
+  border-left-color: var(--forest);
+  background: var(--forest-light);
+}
+
+/* Form Status Banners */
+.form-status {
+  padding: 12px 18px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  display: none;
+}
+.form-status.info {
+  background: #e8f0fe;
+  border: 1px solid #c2d7fa;
+  color: #185abc;
+}
+.form-status.success {
+  background: #e6f4ea;
+  border: 1px solid #b7e1cd;
+  color: #0d652d;
+}
+.form-status.error {
+  background: #fce8e6;
+  border: 1px solid #fad2cf;
+  color: #c5221f;
+}
 
 @media (prefers-reduced-motion: reduce) {
   * {

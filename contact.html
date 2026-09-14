@@ -10,6 +10,55 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="assets/style.css" />
+    <style>
+      /* Page-specific additions — built on the same tokens as assets/style.css */
+      .contact-columns {
+        display: grid;
+        grid-template-columns: 1fr 1.3fr;
+        gap: 32px;
+        align-items: start;
+      }
+      @media (max-width: 860px) {
+        .contact-columns {
+          grid-template-columns: 1fr;
+        }
+      }
+      .contact-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .contact-card {
+        background: var(--paper);
+        border: 1.5px solid var(--line);
+        border-left: 4px solid var(--orange);
+        border-radius: 12px;
+        padding: 26px 26px 26px 28px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+      }
+      .contact-card h3 {
+        font-size: 1.1rem;
+        margin: 0 0 10px;
+      }
+      .contact-card p {
+        font-size: 0.92rem;
+        color: var(--slate);
+        margin: 0 0 8px;
+        line-height: 1.55;
+      }
+      .contact-card p:last-child {
+        margin-bottom: 0;
+      }
+      .contact-card a {
+        color: var(--orange);
+        font-weight: 600;
+        text-decoration: none;
+      }
+      .contact-form-shell {
+        max-width: none;
+        margin: 0;
+      }
+    </style>
   </head>
   <body>
     <a href="#main" class="skip-link">Skip to main content</a>
@@ -79,69 +128,132 @@
 
       <section class="section-cream">
         <div class="container">
-          <div class="cards-grid">
-            <div class="card">
-              <h3>Email</h3>
-              <p>
-                <a
-                  href="mailto:info@deutschamabend.org"
-                  style="
-                    color: var(--orange);
-                    text-decoration: none;
-                    font-weight: 600;
-                  "
-                  >info@deutschamabend.org</a
-                >
-              </p>
-              <p>We'll reply within 24-48 hours.</p>
+          <div class="contact-columns">
+            <div class="contact-cards">
+              <div class="contact-card">
+                <h3>Direct Email</h3>
+                <p>
+                  <a href="mailto:info@deutschamabend.org"
+                    >info@deutschamabend.org</a
+                  >
+                </p>
+                <p>We reply within 24–48 hours on business days.</p>
+              </div>
+              <div class="contact-card">
+                <h3>Course Registration</h3>
+                <p>
+                  Ready to enroll in an upcoming batch?
+                  <a href="registration.html">Fill in the registration form</a>
+                  and our team will confirm your slot.
+                </p>
+              </div>
+              <div class="contact-card">
+                <h3>1-on-1 Private Tutoring</h3>
+                <p>
+                  Need tailored preparation for an exam or work assignment?
+                  <a href="tutoring.html">Explore private tutoring</a>.
+                </p>
+              </div>
+              <div class="contact-card">
+                <h3>Institutional &amp; Corporate Training</h3>
+                <p>
+                  Interested in collaborating or arranging German training for
+                  your team?
+                  <a href="mailto:info@deutschamabend.org"
+                    >Email our partnerships team</a
+                  >.
+                </p>
+              </div>
             </div>
-            <div class="card">
-              <h3>Course registration</h3>
-              <p>
-                Ready to enroll?
-                <a
-                  href="registration.html"
-                  style="
-                    color: var(--orange);
-                    text-decoration: none;
-                    font-weight: 600;
-                  "
-                  >Fill in the registration form</a
-                >
-                and we'll take it from there.
+
+            <div class="form-shell contact-form-shell">
+              <h2>Send us a Message</h2>
+              <p class="form-note" style="max-width: none; margin-bottom: 24px">
+                Fill out this quick form and we'll get right back to you.
               </p>
-            </div>
-            <div class="card">
-              <h3>Membership</h3>
-              <p>
-                Want a discount on every course?
-                <a
-                  href="services.html#membership"
-                  style="
-                    color: var(--orange);
-                    text-decoration: none;
-                    font-weight: 600;
-                  "
-                  >Apply for membership</a
-                >
-                — here.
-              </p>
-            </div>
-            <div class="card">
-              <h3>Institutional Partnerships & Corporate Training</h3>
-              <p>
-                Interested in collaborating with us or arranging corporate
-                training for your team?
-                <a
-                  href="mailto:info@deutschamabend.org"
-                  style="
-                    color: var(--orange);
-                    text-decoration: none;
-                    font-weight: 600;
-                  "
-                  >Email us!</a
-                >
-              </p>
+
+              <form id="contact-form" novalidate>
+                <div class="field-row">
+                  <div class="field">
+                    <label for="contact-name"
+                      >Your Full Name
+                      <span class="required-mark">*</span></label
+                    >
+                    <input
+                      type="text"
+                      id="contact-name"
+                      name="name"
+                      autocomplete="name"
+                      required
+                    />
+                  </div>
+                  <div class="field">
+                    <label for="contact-email"
+                      >Email Address <span class="required-mark">*</span></label
+                    >
+                    <input
+                      type="email"
+                      id="contact-email"
+                      name="email"
+                      autocomplete="email"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="field-row">
+                  <div class="field">
+                    <label for="contact-topic">Inquiry Topic</label>
+                    <select id="contact-topic" name="topic">
+                      <option value="General Inquiry">General Inquiry</option>
+                      <option value="Course Registration">
+                        Course Registration
+                      </option>
+                      <option value="Community Membership">
+                        Community Membership
+                      </option>
+                      <option value="1-on-1 Private Tutoring">
+                        1-on-1 Private Tutoring
+                      </option>
+                      <option value="Institutional & Corporate Training">
+                        Institutional &amp; Corporate Training
+                      </option>
+                      <option value="Donation">Donation</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="contact-subject"
+                      >Subject <span class="required-mark">*</span></label
+                    >
+                    <input
+                      type="text"
+                      id="contact-subject"
+                      name="subject"
+                      placeholder="e.g. Question about evening classes"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label for="contact-message"
+                    >Message <span class="required-mark">*</span></label
+                  >
+                  <textarea
+                    id="contact-message"
+                    name="message"
+                    placeholder="Tell us what you need help with..."
+                    required
+                  ></textarea>
+                </div>
+
+                <div class="form-foot">
+                  <button type="submit" class="btn btn-primary">
+                    Send Message
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
@@ -160,29 +272,6 @@
             <div class="donation-methods">
               <a href="donate.html" class="btn btn-primary"
                 >See how to donate</a
-              >
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="section-cream">
-        <div class="container">
-          <div class="cta-band">
-            <span class="eyebrow" style="color: rgba(255, 255, 255, 0.8)"
-              >Ready to begin?</span
-            >
-            <h2>Your German classes are just one form away.</h2>
-            <p>Register now or send us any questions you have.</p>
-            <div class="btn-row" style="justify-content: center">
-              <a href="registration.html" class="btn btn-primary"
-                >Register now</a
-              >
-              <a
-                href="mailto:info@deutschamabend.org"
-                class="btn btn-ghost"
-                style="border-color: #fff; color: #fff"
-                >Email us</a
               >
             </div>
           </div>
@@ -274,6 +363,7 @@
       </div>
     </footer>
 
+    <script src="assets/contact-mailto.js"></script>
     <script src="assets/main.js"></script>
   </body>
 </html>
