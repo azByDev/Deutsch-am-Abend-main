@@ -8,7 +8,7 @@
 (function () {
   "use strict";
 
-  var WEB3FORMS_ACCESS_KEY = "cd1b28ce-8440-4fd6-bc24-e3b728bb6cff";
+  var WEB3FORMS_ACCESS_KEY = "e8f3400a-a9bd-429f-9888-03d97f9b5c2c";
   var FALLBACK_EMAIL = "info@deutschamabend.org";
 
   document.addEventListener("DOMContentLoaded", function () {
