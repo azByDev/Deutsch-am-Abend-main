@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Register for Deutsch am Abend community events." />
+  <title>Community Events - Deutsch am Abend</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="assets/style.css" />
+  <style>
+    .events-intro {
+      max-width: 720px;
+    }
+
+    .events-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      padding: 0 0 18px;
+      border-bottom: 1px solid var(--charcoal);
+    }
+
+    .event-filter {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: var(--charcoal);
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+    }
+
+    .event-filter select {
+      border: 0;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+    }
+
+    .online-filter {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+      font-weight: 700;
+    }
+
+    .online-filter input {
+      width: 40px;
+      height: 22px;
+      appearance: none;
+      border-radius: 999px;
+      background: #b7bec1;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .online-filter input::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform 0.2s ease;
+    }
+
+    .online-filter input:checked {
+      background: var(--forest);
+    }
+
+    .online-filter input:checked::after {
+      transform: translateX(18px);
+    }
+
+    .events-list {
+      margin-top: 14px;
+    }
+
+    .event-card {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr) 136px;
+      gap: 44px;
+      align-items: center;
+      padding: 28px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .event-card[hidden] {
+      display: none;
+    }
+
+    .event-date {
+      color: var(--charcoal);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .event-time {
+      display: block;
+      color: var(--slate);
+      font-size: 0.82rem;
+      font-weight: 400;
+    }
+
+    .event-card h2 {
+      margin: 0 0 10px;
+      font-family: var(--body);
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: 0;
+      color: var(--charcoal);
+    }
+
+    .event-meta {
+      color: var(--slate);
+      font-size: 0.88rem;
+    }
+
+    .event-card .btn {
+      justify-self: end;
+    }
+
+    .event-form-shell {
+      grid-column: 2 / 4;
+      width: 100%;
+      margin-top: 0;
+      padding: 20px 0 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .event-form-shell[hidden] {
+      display: none;
+    }
+
+    .event-form-shell h3 {
+      font-size: 1.1rem;
+    }
+
+    .event-form-shell .field {
+      margin-bottom: 12px;
+    }
+
+    .event-form-shell input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid var(--line);
+      border-radius: 8px;
+      background: var(--cream);
+      font: inherit;
+    }
+
+    .event-form-shell input:focus {
+      border-color: var(--orange);
+      outline: none;
+    }
+
+    @media (max-width: 800px) {
+      .event-card {
+        grid-template-columns: 150px minmax(0, 1fr) 110px;
+        gap: 20px;
+      }
+
+      .event-card h2 {
+        font-size: 1.35rem;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .events-toolbar {
+        flex-wrap: wrap;
+        gap: 14px;
+      }
+
+      .online-filter {
+        margin-left: 0;
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .event-card {
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        padding: 22px 0;
+      }
+
+      .event-card>div:nth-child(2) {
+        grid-column: 1 / -1;
+        grid-row: 2;
+      }
+
+      .event-card .btn {
+        grid-column: 2;
+        grid-row: 1;
+      }
+
+      .event-form-shell {
+        grid-column: 1 / -1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <div class="np-banner">
+    <div class="container">
+      <span aria-hidden="true">*</span><span><strong>Community events:</strong> Learn, practise, and meet fellow
+        learners.</span>
+    </div>
+  </div>
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="brand"><span class="brand-mark">DAA</span><span class="brand-name">Deutsch am
+          Abend<small>German Language Community</small></span></a>
+      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M3 6h18M3 12h18M3 18h18" />
+        </svg>
+      </button>
+      <nav class="main-nav" aria-label="Main">
+        <a href="index.html">Home</a><a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <!-- <a href="community.html">Community</a> -->
+        <a href="events.html" aria-current="page">Events</a>
+        <a href="meetings.html">Book Consultation</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="hero" style="padding: 64px 0 72px">
+      <div class="container">
+        <div class="hero-inner events-intro">
+          <span class="eyebrow">Meet the community</span>
+          <h1>Connect, learn and grow: <br />Events for our community.</h1>
+          <p class="lede">
+            Register for an event and we will send the joining details to your
+            email. Spaces help us prepare a welcoming experience for everyone.
+          </p>
+        </div>
+      </div>
+    </section>
+    <section class="section-cream">
+      <div class="container">
+        <!-- <div class="events-toolbar" aria-label="Event filters">
+            <label class="event-filter"
+              >
+              <select id="event-location">
+                <option value="all"> Locations</option>
+                <option value="online">Online</option>
+                <option value="quezon">Quezon City</option>
+              </select></label
+            >
+            <label class="event-filter"
+              > 
+              <select id="event-date">
+                <option value="all">Month</option>
+                <option value="october">October 2026</option>
+                <option value="november">November 2026</option>
+              </select></label
+            >
+            <label class="event-filter"
+              > Themes
+              <select id="event-theme">
+                <option value="all">All themes</option>
+                <option value="conversation">Conversation</option>
+                <option value="study">Study skills</option>
+                <option value="community">Community</option>
+              </select></label
+            >
+            <label class="online-filter"
+              >Only online events <input id="online-only" type="checkbox"
+            /></label>
+          </div> -->
+        <div class="events-list" id="events-list">
+          <article class="event-card" data-location="online" data-date="october" data-theme="conversation">
+            <div>
+              <span class="event-date">10.10.2026</span><span class="event-time">18:00-20:00</span>
+            </div>
+            <div>
+              <h2>German Conversation Evening</h2>
+              <p class="event-meta">
+                <strong>Conversation practice</strong> &nbsp;|&nbsp; Deutsch
+                am Abend community<br />Online · Small-group speaking circles
+              </p>
+            </div>
+            <button class="btn btn-primary event-toggle" type="button" aria-expanded="false">
+              Register <span aria-hidden="true">→</span>
+            </button>
+            <div class="event-form-shell" hidden>
+              <h3>Register for this event</h3>
+              <form class="event-form" data-event="German Conversation Evening">
+                <div class="field">
+                  <label>Email address *</label><input name="email" type="email" required autocomplete="email" />
+                </div>
+                <div class="field">
+                  <label>Full Name *</label><input name="full_name" type="text" maxlength="40"
+                    placeholder="Juan dela Cruz" required />
+                </div>
+                <button class="btn btn-secondary" type="submit">
+                  Send registration
+                </button>
+                <div class="form-status" role="status"></div>
+              </form>
+            </div>
+          </article>
+          <article class="event-card" data-location="online" data-date="october" data-theme="study">
+            <div>
+              <span class="event-date">24.10.2026</span><span class="event-time">14:00-16:00</span>
+            </div>
+            <div>
+              <h2>Study Skills Workshop</h2>
+              <p class="event-meta">s
+                <strong>Study skills</strong> &nbsp;|&nbsp; Deutsch am Abend
+                community<br />Online · Vocabulary, listening, speaking, and
+                writing
+              </p>
+            </div>
+            <button class="btn btn-primary event-toggle" type="button" aria-expanded="false">
+              Register <span aria-hidden="true">→</span>
+            </button>
+            <div class="event-form-shell" hidden>
+              <h3>Register for this event</h3>
+              <form class="event-form" data-event="Study Skills Workshop">
+                <div class="field">
+                  <label>Email address *</label><input name="email" type="email" required autocomplete="email" />
+                </div>
+                <div class="field">
+                  <label>Full Name *</label><input name="full_name" type="text" maxlength="40"
+                    placeholder="Juan dela Cruz" required />
+                </div>
+                <button class="btn btn-secondary" type="submit">
+                  Send registration
+                </button>
+                <div class="form-status" role="status"></div>
+              </form>
+            </div>
+          </article>
+          <article class="event-card" data-location="quezon" data-date="november" data-theme="community">
+            <div>
+              <span class="event-date">07.11.2026</span><span class="event-time">16:00-18:00</span>
+            </div>
+            <div>
+              <h2>Teacher and Learner Meet-up</h2>
+              <p class="event-meta">
+                <strong>Community gathering</strong> &nbsp;|&nbsp; Deutsch am
+                Abend community<br />Quezon City · Meet teachers and fellow
+                learners
+              </p>
+            </div>
+            <button class="btn btn-primary event-toggle" type="button" aria-expanded="false">
+              Register <span aria-hidden="true">→</span>
+            </button>
+            <div class="event-form-shell" hidden>
+              <h3>Register for this event</h3>
+              <form class="event-form" data-event="Teacher and Learner Meet-up">
+                <div class="field">
+                  <label>Email address *</label><input name="email" type="email" required autocomplete="email" />
+                </div>
+                <div class="field">
+                  <label>Full Name *</label><input name="full_name" type="text" maxlength="40"
+                    placeholder="Juan dela Cruz" required />
+                </div>
+                <button class="btn btn-secondary" type="submit">
+                  Send registration
+                </button>
+                <div class="form-status" role="status"></div>
+              </form>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <span class="brand-name" style="color: #fff">Deutsch am Abend</span>
+          <p>
+            A non-profit German Language Community based in the Philippines.
+          </p>
+        </div>
+        <div>
+          <h4>Explore</h4>
+          <ul>
+            <!-- <li><a href="community.html">Community</a></li> -->
+            <li><a href="donate.html">Donate</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Deutsch am Abend. Non-profit organisation.</span><span>Built for the community.</span>
+      </div>
+    </div>
+  </footer>
+  <script src="assets/main.js"></script>
+  <script src="assets/events.js"></script>
+</body>
+
+</html>

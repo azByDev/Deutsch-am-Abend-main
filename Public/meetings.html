@@ -1,0 +1,823 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Book a 1-on-1 consultation with Deutsch am Abend to discuss German courses, Goethe-Zertifikat preparation, or visa pathways."
+    />
+    <title>Book a 1-on-1 Consultation — Deutsch am Abend</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/style.css" />
+    <style>
+      .scheduler-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.7fr) minmax(300px, 1fr);
+        gap: 36px;
+        align-items: start;
+        margin-top: 10px;
+      }
+      @media (max-width: 900px) {
+        .scheduler-layout {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Booking Shell Card */
+      .booking-card {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 32px;
+        box-shadow: 0 4px 20px rgba(45, 80, 22, 0.05);
+      }
+      @media (max-width: 560px) {
+        .booking-card {
+          padding: 20px 16px;
+        }
+      }
+
+      /* Step Indicators */
+      .booking-steps {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 28px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid var(--line);
+        overflow-x: auto;
+      }
+      .step-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: var(--mono);
+        font-size: 0.76rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--slate);
+        white-space: nowrap;
+      }
+      .step-item.active {
+        color: var(--forest);
+        font-weight: 700;
+      }
+      .step-item.completed {
+        color: var(--orange-dark);
+      }
+      .step-num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: var(--cream);
+        border: 1.5px solid var(--line);
+        font-weight: 700;
+      }
+      .step-item.active .step-num {
+        background: var(--forest);
+        border-color: var(--forest);
+        color: #fff;
+      }
+      .step-item.completed .step-num {
+        background: var(--orange);
+        border-color: var(--orange);
+        color: #fff;
+      }
+
+      /* Step Views */
+      .step-view {
+        display: none;
+      }
+      .step-view.active {
+        display: block;
+      }
+
+      /* Step 1: Calendar */
+      .pub-cal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+      .pub-cal-title {
+        font-family: var(--display);
+        font-size: 1.45rem;
+        margin: 0;
+        color: var(--forest);
+      }
+      .pub-cal-controls {
+        display: flex;
+        gap: 6px;
+      }
+      .pub-cal-btn {
+        background: var(--cream);
+        border: 1.5px solid var(--line);
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .pub-cal-btn:hover {
+        border-color: var(--orange);
+        color: var(--orange);
+      }
+
+      .pub-cal-weekdays {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        text-align: center;
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: var(--slate);
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--line);
+      }
+      .pub-cal-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 6px;
+        margin-top: 10px;
+      }
+      .pub-cal-day {
+        aspect-ratio: 1;
+        min-height: 48px;
+        border-radius: 8px;
+        background: var(--cream);
+        border: 1.5px solid transparent;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        position: relative;
+      }
+      .pub-cal-day.empty {
+        background: transparent;
+        cursor: default;
+      }
+      .pub-cal-day.available {
+        background: #f1f8ed;
+        border-color: #c9e0be;
+      }
+      .pub-cal-day.available:hover {
+        border-color: var(--orange);
+        background: #fff8f2;
+        transform: translateY(-2px);
+      }
+      .pub-cal-day.selected {
+        outline: 3px solid var(--orange);
+        border-color: var(--orange-dark);
+        background: #fff3e8 !important;
+      }
+      .pub-cal-day.blocked,
+      .pub-cal-day.closed,
+      .pub-cal-day.past {
+        background: #f3efe9;
+        color: #a8a29e;
+        cursor: not-allowed;
+        opacity: 0.65;
+      }
+      .pub-cal-day-num {
+        font-weight: 700;
+        font-size: 0.95rem;
+      }
+      .pub-cal-day-label {
+        font-size: 0.65rem;
+        font-family: var(--mono);
+        margin-top: 2px;
+      }
+      .pub-cal-day.available .pub-cal-day-label {
+        color: var(--forest);
+        font-weight: 600;
+      }
+
+      .pub-cal-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        font-size: 0.78rem;
+        color: var(--slate);
+        margin-top: 18px;
+        padding-top: 14px;
+        border-top: 1px solid var(--line);
+      }
+
+      /* Step 2: Time Slots */
+      .selected-date-banner {
+        background: var(--cream);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 14px 18px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .selected-date-banner h3 {
+        margin: 0;
+        font-size: 1.25rem;
+      }
+      .pub-slots-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 12px;
+        margin-top: 14px;
+      }
+      .pub-slot-btn {
+        background: #fff;
+        border: 1.5px solid var(--line);
+        border-radius: 8px;
+        padding: 14px 12px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .pub-slot-btn:hover {
+        border-color: var(--orange);
+        background: #fffaf5;
+        transform: translateY(-2px);
+      }
+      .pub-slot-btn.selected {
+        border-color: var(--forest);
+        background: var(--forest-light);
+        outline: 2px solid var(--forest);
+      }
+      .pub-slot-time {
+        font-family: var(--mono);
+        font-weight: 700;
+        font-size: 1.05rem;
+        color: var(--forest);
+      }
+      .pub-slot-duration {
+        font-size: 0.76rem;
+        color: var(--slate);
+      }
+
+      /* Step 3: Registration Form */
+      .consult-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      @media (max-width: 600px) {
+        .consult-form {
+          grid-template-columns: 1fr;
+        }
+      }
+      .consult-form .field-full {
+        grid-column: 1 / -1;
+      }
+      .consult-form label {
+        display: block;
+        font-weight: 600;
+        font-size: 0.88rem;
+        margin-bottom: 6px;
+      }
+      .consult-form input,
+      .consult-form select,
+      .consult-form textarea {
+        width: 100%;
+        padding: 11px 13px;
+        border: 1.5px solid var(--line);
+        border-radius: 8px;
+        background: var(--cream);
+        font-family: var(--body);
+        font-size: 0.95rem;
+      }
+      .consult-form textarea {
+        min-height: 90px;
+        resize: vertical;
+      }
+      .consult-form input:focus,
+      .consult-form select:focus,
+      .consult-form textarea:focus {
+        outline: none;
+        border-color: var(--forest);
+        box-shadow: 0 0 0 3px rgba(45, 80, 22, 0.12);
+      }
+
+      /* Step 4: Confirmation Screen */
+      .confirmation-card {
+        text-align: center;
+        padding: 30px 10px;
+      }
+      .confirm-icon-circle {
+        width: 68px;
+        height: 68px;
+        border-radius: 50%;
+        background: #eef7e9;
+        border: 2px solid #a3cf8d;
+        color: var(--forest);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 18px;
+      }
+      .confirm-details-box {
+        background: var(--cream);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 22px 24px;
+        margin: 24px auto;
+        max-width: 520px;
+        text-align: left;
+      }
+      .confirm-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--line);
+        font-size: 0.92rem;
+      }
+      .confirm-row:last-child {
+        border-bottom: none;
+      }
+      .confirm-label {
+        color: var(--slate);
+      }
+      .confirm-val {
+        font-weight: 600;
+        color: var(--charcoal);
+        text-align: right;
+      }
+
+      /* Side Info Cards */
+      .side-card {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 20px;
+      }
+      .side-card h3 {
+        font-size: 1.15rem;
+        margin: 0 0 12px;
+      }
+      .side-card p {
+        font-size: 0.9rem;
+        color: var(--charcoal);
+        margin: 0 0 10px;
+      }
+      .feature-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .feature-list li {
+        display: flex;
+        gap: 10px;
+        font-size: 0.88rem;
+        margin-bottom: 12px;
+        align-items: flex-start;
+      }
+      .feature-icon {
+        color: var(--forest);
+        flex-shrink: 0;
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+
+    <div class="np-banner">
+      <div class="container">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            d="M12 21s-8-4.5-8-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6.5-8 11-8 11z"
+          />
+        </svg>
+        <span>
+          <strong>Non-profit organization:</strong> Consultations are 100% free
+          with no obligation.
+        </span>
+      </div>
+    </div>
+
+    <header class="site-header">
+      <div class="container">
+        <a href="index.html" class="brand">
+          <span class="brand-mark">DAA</span>
+          <span class="brand-name">
+            Deutsch am Abend
+            <small>German Language Community</small>
+          </span>
+        </a>
+        <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <path d="M3 6h18M3 12h18M3 18h18" />
+          </svg>
+        </button>
+        <nav class="main-nav" aria-label="Main">
+          <a href="index.html">Home</a>
+          <a href="about.html">About</a>
+          <a href="services.html">Services</a>
+          <a href="tutoring.html">1-on-1 Tutoring</a>
+          <a href="events.html">Events</a>
+          <a href="meetings.html" aria-current="page">Book Consultation</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" style="padding: 64px 0 54px">
+        <div class="container">
+          <div class="hero-inner" style="max-width: 760px;">
+            <span class="eyebrow">Personal Advisory &amp; Placement</span>
+            <h1>Schedule your 1-on-1 Consultation.</h1>
+            <p class="lede">
+              Speak directly with an experienced Deutsch am Abend instructor.
+              Choose an open date and time slot below to assess your current German
+              level, discuss Goethe exam prep, or plan your visa pathway.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-cream">
+        <div class="container">
+          <div class="scheduler-layout">
+            <!-- Left: Interactive Multi-Step Scheduler -->
+            <div class="booking-card">
+              <!-- Steps Header -->
+              <div class="booking-steps" aria-label="Booking steps">
+                <div class="step-item active" id="step-indicator-1">
+                  <span class="step-num">1</span>
+                  <span>Select Date</span>
+                </div>
+                <div class="step-item" id="step-indicator-2">
+                  <span class="step-num">2</span>
+                  <span>Select Time</span>
+                </div>
+                <div class="step-item" id="step-indicator-3">
+                  <span class="step-num">3</span>
+                  <span>Your Details</span>
+                </div>
+              </div>
+
+              <!-- STEP 1: DATE SELECTION -->
+              <div class="step-view active" id="view-step-1">
+                <div class="pub-cal-header">
+                  <h2 class="pub-cal-title" id="pub-cal-month-title">
+                    October 2026
+                  </h2>
+                  <div class="pub-cal-controls">
+                    <button
+                      class="pub-cal-btn"
+                      id="pub-btn-prev"
+                      type="button"
+                      aria-label="Previous Month"
+                    >
+                      &larr; Prev
+                    </button>
+                    <button class="pub-cal-btn" id="pub-btn-today" type="button">
+                      Today
+                    </button>
+                    <button
+                      class="pub-cal-btn"
+                      id="pub-btn-next"
+                      type="button"
+                      aria-label="Next Month"
+                    >
+                      Next &rarr;
+                    </button>
+                  </div>
+                </div>
+
+                <div class="pub-cal-weekdays">
+                  <div>Mon</div>
+                  <div>Tue</div>
+                  <div>Wed</div>
+                  <div>Thu</div>
+                  <div>Fri</div>
+                  <div>Sat</div>
+                  <div>Sun</div>
+                </div>
+
+                <div class="pub-cal-grid" id="pub-cal-grid">
+                  <!-- Generated dynamically by meetings.js -->
+                </div>
+
+                <div class="pub-cal-legend">
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <span style="width: 12px; height: 12px; border-radius: 3px; background: #f1f8ed; border: 1px solid #c9e0be;"></span>
+                    Open Date (Available slots)
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <span style="width: 12px; height: 12px; border-radius: 3px; background: #fff3e8; border: 1.5px solid var(--orange);"></span>
+                    Selected
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <span style="width: 12px; height: 12px; border-radius: 3px; background: #f3efe9;"></span>
+                    Blocked / Unavailable
+                  </div>
+                </div>
+              </div>
+
+              <!-- STEP 2: TIME SLOT SELECTION -->
+              <div class="step-view" id="view-step-2">
+                <div class="selected-date-banner">
+                  <div>
+                    <span class="eyebrow" style="margin-bottom: 2px;">Selected Date</span>
+                    <h3 id="step-2-date-display">Monday, 12 Oct 2026</h3>
+                  </div>
+                  <button
+                    class="btn btn-secondary"
+                    id="btn-back-to-step-1"
+                    type="button"
+                    style="padding: 6px 14px; font-size: 0.85rem;"
+                  >
+                    Change Date
+                  </button>
+                </div>
+
+                <h3 style="font-size: 1.15rem; margin: 0 0 4px;">
+                  Available Time Slots
+                </h3>
+                <p style="font-size: 0.88rem; color: var(--slate); margin: 0 0 16px;">
+                  Select an open time slot for your consultation call:
+                </p>
+
+                <div class="pub-slots-grid" id="pub-slots-container">
+                  <!-- Generated dynamically -->
+                </div>
+              </div>
+
+              <!-- STEP 3: CONTACT DETAILS & CONFIRM -->
+              <div class="step-view" id="view-step-3">
+                <div class="selected-date-banner">
+                  <div>
+                    <span class="eyebrow" style="margin-bottom: 2px;">Appointment Time</span>
+                    <h3 id="step-3-datetime-display">Monday, 12 Oct 2026 at 10:00 AM</h3>
+                  </div>
+                  <button
+                    class="btn btn-secondary"
+                    id="btn-back-to-step-2"
+                    type="button"
+                    style="padding: 6px 14px; font-size: 0.85rem;"
+                  >
+                    Change Time
+                  </button>
+                </div>
+
+                <form id="consultation-booking-form" novalidate>
+                  <div class="consult-form">
+                    <div class="field">
+                      <label for="book-name">Full Name *</label>
+                      <input
+                        type="text"
+                        id="book-name"
+                        name="name"
+                        placeholder="Juan dela Cruz"
+                        required
+                        maxlength="60"
+                      />
+                    </div>
+                    <div class="field">
+                      <label for="book-email">Email Address *</label>
+                      <input
+                        type="email"
+                        id="book-email"
+                        name="email"
+                        placeholder="juan@example.com"
+                        required
+                        autocomplete="email"
+                      />
+                    </div>
+                    <div class="field">
+                      <label for="book-phone">Phone / WhatsApp Number *</label>
+                      <input
+                        type="tel"
+                        id="book-phone"
+                        name="phone"
+                        placeholder="+63 912 345 6789"
+                        required
+                      />
+                    </div>
+                    <div class="field">
+                      <label for="book-topic">Consultation Focus *</label>
+                      <select id="book-topic" name="topic" required>
+                        <option value="">Select a topic...</option>
+                        <option value="Course Placement & Level Assessment">Course Placement &amp; Level Assessment</option>
+                        <option value="Goethe-Zertifikat Exam Preparation">Goethe-Zertifikat Exam Preparation (A1-B2)</option>
+                        <option value="Visa & Opportunity Card (Chancenkarte) Guidance">Visa &amp; Opportunity Card (Chancenkarte)</option>
+                        <option value="1-on-1 Private Tutoring Inquiry">1-on-1 Private Tutoring Inquiry</option>
+                        <option value="General German Learning Advice">General German Learning Advice</option>
+                      </select>
+                    </div>
+                    <div class="field field-full">
+                      <label for="book-notes">
+                        Tell us a bit about your current level and goals (optional):
+                      </label>
+                      <textarea
+                        id="book-notes"
+                        name="notes"
+                        placeholder="e.g. Complete beginner aiming for Goethe A1 in December, or currently B1 preparing for hospital job interview in Germany..."
+                      ></textarea>
+                    </div>
+                  </div>
+
+                  <div style="margin-top: 24px;">
+                    <button
+                      class="btn btn-primary"
+                      id="btn-submit-booking"
+                      type="submit"
+                      style="width: 100%; padding: 14px;"
+                    >
+                      Confirm Consultation Reservation &rarr;
+                    </button>
+                    <div
+                      id="booking-form-status"
+                      style="margin-top: 12px; font-size: 0.88rem; text-align: center;"
+                    ></div>
+                  </div>
+                </form>
+              </div>
+
+              <!-- STEP 4: SUCCESS CONFIRMATION -->
+              <div class="step-view" id="view-step-4">
+                <div class="confirmation-card">
+                  <div class="confirm-icon-circle">
+                    <svg
+                      width="34"
+                      height="34"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.5"
+                    >
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </div>
+                  <h2 style="margin: 0 0 8px; color: var(--forest);">
+                    Consultation Confirmed!
+                  </h2>
+                  <p style="color: var(--slate); max-width: 480px; margin: 0 auto 20px;">
+                    We look forward to meeting you. A calendar confirmation has been
+                    scheduled. We will send the meeting link to your email.
+                  </p>
+
+                  <div class="confirm-details-box">
+                    <div class="confirm-row">
+                      <span class="confirm-label">Date:</span>
+                      <span class="confirm-val" id="conf-date">—</span>
+                    </div>
+                    <div class="confirm-row">
+                      <span class="confirm-label">Time:</span>
+                      <span class="confirm-val" id="conf-time">—</span>
+                    </div>
+                    <div class="confirm-row">
+                      <span class="confirm-label">Learner Name:</span>
+                      <span class="confirm-val" id="conf-name">—</span>
+                    </div>
+                    <div class="confirm-row">
+                      <span class="confirm-label">Focus Area:</span>
+                      <span class="confirm-val" id="conf-topic">—</span>
+                    </div>
+                    <div class="confirm-row">
+                      <span class="confirm-label">Format:</span>
+                      <span class="confirm-val" id="conf-location">Online via Google Meet</span>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                    <a
+                      class="btn btn-primary"
+                      id="btn-add-gcal"
+                      href="#"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Add to Google Calendar ↗
+                    </a>
+                    <button class="btn btn-secondary" id="btn-download-ics" type="button">
+                      Download .ICS File
+                    </button>
+                    <button class="btn btn-secondary" id="btn-book-another" type="button">
+                      Book Another Session
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Helpful Side Info -->
+            <div>
+              <div class="side-card">
+                <h3>What happens in a consultation?</h3>
+                <ul class="feature-list">
+                  <li>
+                    <span class="feature-icon">✓</span>
+                    <div>
+                      <strong>Free Language Assessment:</strong>
+                      Quick evaluation to determine your CEFR level (A1, A2, B1, or B2).
+                    </div>
+                  </li>
+                  <li>
+                    <span class="feature-icon">✓</span>
+                    <div>
+                      <strong>Custom Roadmap:</strong>
+                      Target timeline and weekly study plan tailored to your job or visa goals.
+                    </div>
+                  </li>
+                  <li>
+                    <span class="feature-icon">✓</span>
+                    <div>
+                      <strong>No pressure, no spam:</strong>
+                      We are a registered community non-profit dedicated to accessible German education.
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="side-card" style="background: var(--cream);">
+                <h3>Need a different time?</h3>
+                <p>
+                  If none of the open time slots fit your schedule or timezone, send
+                  us an email with your availability:
+                </p>
+                <p>
+                  <a
+                    href="mailto:info@deutschamabend.org?subject=Consultation%20Schedule%20Inquiry"
+                    style="font-weight: 600; color: var(--forest); text-decoration: underline;"
+                  >
+                    info@deutschamabend.org
+                  </a>
+                </p>
+                <p style="font-size: 0.84rem; color: var(--slate); margin-top: 12px;">
+                  We typically reply within 24 hours on business days.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <span class="brand-name" style="color: #fff;">Deutsch am Abend</span>
+            <p>
+              A non-profit German Language Community based in the Philippines,
+              fostering language fluency and cultural connection.
+            </p>
+          </div>
+          <div>
+            <h4>Explore</h4>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="about.html">About</a></li>
+              <li><a href="services.html">Services</a></li>
+              <li><a href="tutoring.html">1-on-1 Tutoring</a></li>
+              <li><a href="events.html">Events</a></li>
+              <li><a href="meetings.html">Book Consultation</a></li>
+              <li><a href="contact.html">Contact</a></li>
+              <li><a href="donate.html">Donate</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© 2026 Deutsch am Abend. Non-profit organisation.</span>
+          <span>Built for the community.</span>
+        </div>
+      </div>
+    </footer>
+
+    <script src="assets/main.js"></script>
+    <script src="assets/meetings.js"></script>
+  </body>
+</html>
