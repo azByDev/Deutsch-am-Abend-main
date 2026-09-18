@@ -56,27 +56,4 @@ or after uploading it to GitHub Pages or any other host.
 
 ---
 
-## Community groups setup
-
-The A1-A2-B1-B2 discussion groups use Supabase so posts and replies are shared
-between members and devices. The existing paid two-year Community Membership
-process is separate and still uses the signed PDF and proof-of-payment email
-process described above.
-
-1. Create a free Supabase project.
-2. In **Authentication > Providers > Email**, require email confirmation.
-3. In **Authentication > URL Configuration**, add the deployed site URL and
-   the local URL used for testing.
-4. Run `supabase-schema.sql` in the Supabase SQL Editor.
-5. Copy the project's URL and public `anon` key into
-   `assets/supabase-config.js`. The anon key is safe for browser use; never put
-   a service-role key in this repository.
-6. Open `community.html`, create an account, verify the email, choose a level,
-   and test a post and reply. Use two test accounts to confirm that each level
-   only sees its own feed.
-
-The first version intentionally stores text posts and replies only. Attachments
-need a separate Supabase Storage bucket with file-size, content-type, and
-moderation policies before they should be enabled.
-
 **Questions?** Email info.deutschamabend@gmail.com
