@@ -4,6 +4,17 @@
   var STORAGE_KEY = "daa_events_v1";
   var defaultEvents = [
     {
+      id: "consultation",
+      title: "1-on-1 Consultation",
+      date: "By Appointment",
+      time: "Flexible · 45 mins",
+      location: "online",
+      theme: "consultation",
+      description:
+        "Speak directly with an instructor for assessment, exam advice, or course planning.",
+      link: "meetings.html",
+    },
+    {
       id: "conversation-2026-10-10",
       title: "German Conversation Evening",
       date: "2026-10-10",
@@ -241,6 +252,9 @@
   }
 
   function formatDate(value) {
+    if (!value || isNaN(new Date(value + "T12:00:00").getTime())) {
+      return value || "By Appointment";
+    }
     return new Intl.DateTimeFormat(undefined, {
       day: "2-digit",
       month: "2-digit",
@@ -260,7 +274,15 @@
     events
       .slice()
       .sort(function (a, b) {
-        return a.date.localeCompare(b.date);
+        var aIsConsultation =
+          a.id === "consultation" ||
+          (a.title && a.title.toLowerCase().indexOf("consultation") !== -1);
+        var bIsConsultation =
+          b.id === "consultation" ||
+          (b.title && b.title.toLowerCase().indexOf("consultation") !== -1);
+        if (aIsConsultation && !bIsConsultation) return -1;
+        if (!aIsConsultation && bIsConsultation) return 1;
+        return (a.date || "").localeCompare(b.date || "");
       })
       .forEach(function (event) {
         var row = document.createElement("div");

@@ -13,14 +13,23 @@ document.addEventListener("DOMContentLoaded", function () {
   function filterEvents() {
     eventCards.forEach(function (card) {
       var locationMatches =
+        !locationFilter ||
         locationFilter.value === "all" ||
         card.dataset.location === locationFilter.value;
       var dateMatches =
-        dateFilter.value === "all" || card.dataset.date === dateFilter.value;
+        !dateFilter ||
+        dateFilter.value === "all" ||
+        card.dataset.date === "all" ||
+        (card.dataset.date && card.dataset.date.indexOf(dateFilter.value) !== -1);
       var themeMatches =
-        themeFilter.value === "all" || card.dataset.theme === themeFilter.value;
+        !themeFilter ||
+        themeFilter.value === "all" ||
+        card.dataset.theme === "all" ||
+        card.dataset.theme === themeFilter.value;
       var onlineMatches =
-        !onlineOnly.checked || card.dataset.location === "online";
+        !onlineOnly ||
+        !onlineOnly.checked ||
+        card.dataset.location === "online";
       card.hidden = !(
         locationMatches &&
         dateMatches &&
@@ -199,38 +208,102 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!Array.isArray(managedEvents)) return;
     var list = document.getElementById("events-list");
     if (!list) return;
+
+    // Ensure 1-on-1 Consultation is present in managed events list
+    var hasConsultation = managedEvents.some(function (event) {
+      return (
+        event.id === "consultation" ||
+        (event.title && event.title.toLowerCase().indexOf("consultation") !== -1)
+      );
+    });
+
+    var eventsToRender = managedEvents.slice();
+    if (!hasConsultation) {
+      eventsToRender.unshift({
+        id: "consultation",
+        title: "1-on-1 Consultation",
+        date: "By Appointment",
+        time: "Flexible · 45 mins",
+        location: "online",
+        theme: "consultation",
+        description:
+          "Personal level assessment, course guidance, and exam prep.",
+        link: "meetings.html",
+      });
+    }
+
     list.textContent = "";
-    managedEvents
+    eventsToRender
       .sort(function (a, b) {
-        return a.date.localeCompare(b.date);
+        var aIsConsultation =
+          a.id === "consultation" ||
+          (a.title && a.title.toLowerCase().indexOf("consultation") !== -1);
+        var bIsConsultation =
+          b.id === "consultation" ||
+          (b.title && b.title.toLowerCase().indexOf("consultation") !== -1);
+        if (aIsConsultation && !bIsConsultation) return -1;
+        if (!aIsConsultation && bIsConsultation) return 1;
+        return (a.date || "").localeCompare(b.date || "");
       })
       .forEach(function (event) {
         var card = document.createElement("article");
         card.className = "event-card";
-        card.dataset.location = event.location;
+        card.dataset.location = event.location || "online";
         card.dataset.date =
-          event.date.slice(0, 7) === "2026-10" ? "october" : "november";
-        card.dataset.theme = event.theme;
-        card.innerHTML =
-          '<div><span class="event-date"></span><span class="event-time"></span></div><div><h2></h2><p class="event-meta"><strong></strong> &nbsp;|&nbsp; Deutsch am Abend community<br /><span class="event-location"></span> · <span class="event-description"></span></p></div><button class="btn btn-secondary event-toggle" type="button" aria-expanded="false">Register <span aria-hidden="true">→</span></button><div class="event-form-shell" hidden><h3>Register for this event</h3><form class="event-form"><div class="field"><label>Email address *</label><input name="email" type="email" required autocomplete="email" /></div><div class="field"><label>Full Name *</label><input name="full_name" type="text" maxlength="40" placeholder="Juan dela Cruz" required /></div><button class="btn btn-primary" type="submit">Send registration</button><div class="form-status" role="status"></div></form></div>';
+          event.date && event.date.slice(0, 7) === "2026-10"
+            ? "october"
+            : event.date && event.date.slice(0, 7) === "2026-11"
+              ? "november"
+              : "all";
+        card.dataset.theme = event.theme || "consultation";
+
+        var isConsultation =
+          event.link ||
+          event.id === "consultation" ||
+          (event.title && event.title.toLowerCase().indexOf("consultation") !== -1);
+
+        if (isConsultation) {
+          var targetUrl = event.link || "meetings.html";
+          card.innerHTML =
+            '<div><span class="event-date"></span><span class="event-time"></span></div>' +
+            '<div><h2></h2><p class="event-meta"><strong>Advisory &amp; Placement</strong> &nbsp;|&nbsp; Deutsch am Abend community<br /><span class="event-location"></span> · <span class="event-description"></span></p></div>' +
+            '<a href="' +
+            targetUrl +
+            '" class="btn btn-primary">Register <span aria-hidden="true">→</span></a>';
+        } else {
+          card.innerHTML =
+            '<div><span class="event-date"></span><span class="event-time"></span></div>' +
+            '<div><h2></h2><p class="event-meta"><strong></strong> &nbsp;|&nbsp; Deutsch am Abend community<br /><span class="event-location"></span> · <span class="event-description"></span></p></div>' +
+            '<button class="btn btn-primary event-toggle" type="button" aria-expanded="false">Register <span aria-hidden="true">→</span></button>' +
+            '<div class="event-form-shell" hidden><h3>Register for this event</h3><form class="event-form"><div class="field"><label>Email address *</label><input name="email" type="email" required autocomplete="email" /></div><div class="field"><label>Full Name *</label><input name="full_name" type="text" maxlength="40" placeholder="Juan dela Cruz" required /></div><button class="btn btn-secondary" type="submit">Send registration</button><div class="form-status" role="status"></div></form></div>';
+        }
+
         card.querySelector(".event-date").textContent = formatManagedDate(
           event.date,
         );
         card.querySelector(".event-time").textContent = event.time;
         card.querySelector("h2").textContent = event.title;
-        card.querySelector("strong").textContent = titleCase(event.theme);
+        if (!isConsultation) {
+          card.querySelector("strong").textContent = titleCase(event.theme || "community");
+        }
         card.querySelector(".event-location").textContent = titleCase(
-          event.location,
+          event.location || "online",
         );
         card.querySelector(".event-description").textContent =
-          event.description;
-        card.querySelector(".event-form").dataset.event = event.title;
+          event.description || "";
+        var form = card.querySelector(".event-form");
+        if (form) {
+          form.dataset.event = event.title;
+        }
         list.appendChild(card);
       });
     list.querySelectorAll(".event-form").forEach(bindForm);
   }
 
   function formatManagedDate(value) {
+    if (!value || isNaN(new Date(value + "T12:00:00").getTime())) {
+      return value || "By Appointment";
+    }
     return new Intl.DateTimeFormat(undefined, {
       day: "2-digit",
       month: "2-digit",
@@ -239,6 +312,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function titleCase(value) {
+    if (!value) return "";
     return value.charAt(0).toUpperCase() + value.slice(1);
   }
 });
