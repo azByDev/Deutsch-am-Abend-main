@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var course = formData.getAll("course").join(", ") || "";
     var courseformat = formData.get("courseformat") || "Not specified";
     var priorlevel = formData.get("priorlevel") || "Not specified";
+    var preferredPace = formData.get("pace") || "No preference / Flexible";
     var PreferredSchedule = formData.get("schedule") || "No preference";
     var goals = formData.get("goals") || "";
     var termsAgreed = formData.get("terms") ? "Yes" : "No";
@@ -67,7 +68,8 @@ document.addEventListener("DOMContentLoaded", function () {
       "Course selected: " + course,
       "Course format: " + courseformat,
       "Prior German level: " + priorlevel,
-      "Preferred schedule: " + PreferredSchedule,
+      "Preferred weekly pace: " + preferredPace,
+      "Preferred timeslot: " + PreferredSchedule,
       "",
       "Goals / questions:",
       goals,
@@ -172,6 +174,15 @@ function showFormStatus(type, message) {
       if (radio) {
         radio.checked = true;
       }
+    }
+  }
+
+  var paceParam = params.get("pace");
+  if (paceParam) {
+    var paceSelect = document.getElementById("preferredPace");
+    if (paceSelect) {
+      if (paceParam === "5x") paceSelect.value = "5x a week (Intensive)";
+      else if (paceParam === "3x") paceSelect.value = "3x a week (Semi-Intensive)";
     }
   }
 })();

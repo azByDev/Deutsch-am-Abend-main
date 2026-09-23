@@ -349,7 +349,15 @@
                   />
                 </div>
                 <div class="field">
-                  <label for="preferredSchedule">Preferred schedule</label>
+                  <label for="preferredPace">Preferred weekly pacing / days</label>
+                  <select id="preferredPace" name="pace">
+                    <option value="">No preference / Flexible</option>
+                    <option value="5x a week (Intensive)">⚡ 5x a week — Intensive (Mon–Fri, ~8 weeks)</option>
+                    <option value="3x a week (Semi-Intensive)">📅 3x a week — Semi-Intensive (Mon/Wed/Fri, ~14 weeks)</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="preferredSchedule">Preferred timeslot</label>
                   <select id="preferredSchedule" name="schedule">
                     <option value="">No preference</option>
                     <option value="Morning">
@@ -363,7 +371,7 @@
                     </option>
                   </select>
                   <p class="form-note" style="margin-top: 6px">
-                    Not sure what's available? Click
+                    Not sure what's available? View our schedule
                     <a
                       href="services.html#schedule"
                       target="_blank"
