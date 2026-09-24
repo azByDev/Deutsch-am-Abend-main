@@ -13,17 +13,22 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         btn.classList.add("active");
         var selectedPace = btn.getAttribute("data-pace");
-        var rows = table.querySelectorAll("tbody tr");
-        rows.forEach(function (row) {
-          var rowPace = row.getAttribute("data-pace");
-          if (selectedPace === "all" || rowPace === selectedPace) {
-            row.classList.remove("is-hidden");
-          } else {
-            row.classList.add("is-hidden");
-          }
-        });
+        // var rows = table.querySelectorAll("tbody tr");
+        // rows.forEach(function (row) {
+        //   var rowPace = row.getAttribute("data-pace");
+        //   if (selectedPace === "all" || rowPace === selectedPace) {
+        //     row.classList.remove("is-hidden");
+        //   } else {
+        //     row.classList.add("is-hidden");
+        //   }
+        // });
+        applyFilter(selectedPace);
       });
     });
+    var activeBtn = filterContainer.querySelector(".filter-pill.active");
+    if (activeBtn) {
+      applyFilter(activeBtn.getAttribute("data-pace"));
+    }
   }
 
   // 2. Optional LocalStorage override support (from Admin panel if present)
@@ -54,8 +59,10 @@ document.addEventListener("DOMContentLoaded", function () {
     // Weekly Pace
     var cellPace = document.createElement("td");
     var paceTag = document.createElement("span");
-    paceTag.className = "pace-tag pace-tag--" + (paceVal === "5x" ? "5x" : "3x");
-    paceTag.textContent = paceVal === "5x" ? "5x / week (Intensive)" : "3x / week (Semi-Intensive)";
+    paceTag.className =
+      "pace-tag pace-tag--" + (paceVal === "5x" ? "5x" : "3x");
+    paceTag.textContent =
+      paceVal === "5x" ? "5x / week (Intensive)" : "3x / week (Semi-Intensive)";
     cellPace.appendChild(paceTag);
     row.appendChild(cellPace);
 
@@ -79,7 +86,9 @@ document.addEventListener("DOMContentLoaded", function () {
     var link = document.createElement("a");
     link.href = "registration.html?course=" + encodeURIComponent(item.course);
     var badge = document.createElement("span");
-    badge.className = "status-badge status-badge--" + (item.status === "open" ? "confirmed" : "forming");
+    badge.className =
+      "status-badge status-badge--" +
+      (item.status === "open" ? "confirmed" : "forming");
     badge.textContent = item.status === "open" ? "Open" : "Register Interest";
     link.appendChild(badge);
     cellReg.appendChild(link);
@@ -87,4 +96,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     tbody.appendChild(row);
   });
+
+  if (filterContainer) {
+    var activeBtnDynamic = filterContainer.querySelector(".filter-pill.active");
+    if (activeBtnDynamic) {
+      applyFilter(activeBtnDynamic.getAttribute("data-pace"));
+    }
+  }
 });
