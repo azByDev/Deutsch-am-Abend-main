@@ -13,16 +13,15 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         btn.classList.add("active");
         var selectedPace = btn.getAttribute("data-pace");
-        // var rows = table.querySelectorAll("tbody tr");
-        // rows.forEach(function (row) {
-        //   var rowPace = row.getAttribute("data-pace");
-        //   if (selectedPace === "all" || rowPace === selectedPace) {
-        //     row.classList.remove("is-hidden");
-        //   } else {
-        //     row.classList.add("is-hidden");
-        //   }
-        // });
-        applyFilter(selectedPace);
+        var rows = table.querySelectorAll("tbody tr");
+        rows.forEach(function (row) {
+          var rowPace = row.getAttribute("data-pace");
+          if (selectedPace === "all" || rowPace === selectedPace) {
+            row.classList.remove("is-hidden");
+          } else {
+            row.classList.add("is-hidden");
+          }
+        });
       });
     });
     var activeBtn = filterContainer.querySelector(".filter-pill.active");
