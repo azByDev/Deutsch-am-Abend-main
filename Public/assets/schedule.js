@@ -25,9 +25,9 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
     var activeBtn = filterContainer.querySelector(".filter-pill.active");
-    if (activeBtn) {
-      applyFilter(activeBtn.getAttribute("data-pace"));
-    }
+    // if (activeBtn) {
+    //   applyFilter(activeBtn.getAttribute("data-pace"));
+    // }
   }
 
   // 2. Optional LocalStorage override support (from Admin panel if present)
