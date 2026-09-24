@@ -868,7 +868,10 @@ section {
   display: flex;
   flex-direction: column;
   position: relative;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .pacing-card:hover {
@@ -1099,14 +1102,14 @@ table.schedule tr.is-hidden {
 }
 
 .pace-tag--5x {
-  background: rgba(45, 80, 22, 0.12);
-  color: var(--forest);
+  background: #ff751f;
+  color: #ffffff;
   border: 1px solid rgba(45, 80, 22, 0.3);
 }
 
 .pace-tag--3x {
-  background: rgba(255, 117, 31, 0.12);
-  color: var(--orange-dark);
+  background: #2d5016;
+  color: #ffffff;
   border: 1px solid rgba(255, 117, 31, 0.3);
 }
 
