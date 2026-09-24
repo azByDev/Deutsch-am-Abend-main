@@ -2,21 +2,24 @@ document.addEventListener("DOMContentLoaded", function () {
   var table = document.getElementById("schedule-table");
   if (!table) return;
 
-  // 1. Interactive Schedule Filtering (All, 5x, 3x)
+  // 1. Interactive Schedule Filtering (5x, 3x)
   var filterContainer = document.getElementById("schedule-filters");
   if (filterContainer) {
     var filterButtons = filterContainer.querySelectorAll(".filter-pill");
+
     filterButtons.forEach(function (btn) {
       btn.addEventListener("click", function () {
         filterButtons.forEach(function (b) {
           b.classList.remove("active");
         });
         btn.classList.add("active");
+
         var selectedPace = btn.getAttribute("data-pace");
         var rows = table.querySelectorAll("tbody tr");
+
         rows.forEach(function (row) {
           var rowPace = row.getAttribute("data-pace");
-          if (selectedPace === "all" || rowPace === selectedPace) {
+          if (rowPace === selectedPace) {
             row.classList.remove("is-hidden");
           } else {
             row.classList.add("is-hidden");
@@ -24,11 +27,41 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       });
     });
+
+    // Apply the default filter on page load
     var activeBtn = filterContainer.querySelector(".filter-pill.active");
-    // if (activeBtn) {
-    //   applyFilter(activeBtn.getAttribute("data-pace"));
-    // }
+    if (activeBtn) {
+      activeBtn.click();
+    }
   }
+  // 1. Interactive Schedule Filtering (All, 5x, 3x)
+  // var filterContainer = document.getElementById("schedule-filters");
+  // if (filterContainer) {
+  //   var filterButtons = filterContainer.querySelectorAll(".filter-pill");
+  //   filterButtons.forEach(function (btn) {
+  //     btn.addEventListener("click", function () {
+  //       filterButtons.forEach(function (b) {
+  //         b.classList.remove("active");
+  //       });
+  //       btn.classList.add("active");
+  //       var selectedPace = btn.getAttribute("data-pace");
+  //       var rows = table.querySelectorAll("tbody tr");
+  //       rows.forEach(function (row) {
+  //         var rowPace = row.getAttribute("data-pace");
+  //         if (selectedPace === selectedPace) {
+  //           row.classList.remove("is-hidden");
+  //         } else {
+  //           row.classList.add("is-hidden");
+  //         }
+  //       });
+  //     });
+  //   });
+  //   var activeBtn = filterContainer.querySelector(".filter-pill.active");
+  //   if (activeBtn) {
+  //     activeBtn.click();
+  //     applyFilter(activeBtn.getAttribute("data-pace"));
+  //   }
+  // }
 
   // 2. Optional LocalStorage override support (from Admin panel if present)
   var raw = localStorage.getItem("daa_schedule_v1");
