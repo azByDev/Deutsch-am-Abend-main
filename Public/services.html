@@ -311,7 +311,7 @@
                   >
                 </div>
                 <h3>Semi-Intensive</h3>
-                <div class="pacing-cadence">3x a week · Mon / Wed / Fri</div>
+                <div class="pacing-cadence">3x a week · Mon / Tue / Wed</div>
                 <p class="pacing-summary">
                   3 hours per session · 9 hours / week
                 </p>
@@ -348,13 +348,13 @@
 
           <div class="schedule-toolbar">
             <div class="schedule-filter-title">Filter by Schedule:</div>
-            <div class="schedule-filter-pills" id="schedule-filters">
-              <!-- <button type="button" class="filter-pill active" data-pace="all">All Offerings</button> -->
-              <button type="button" class="filter-pill" data-pace="5x">
+            <div id="schedule-filters">
+              <!-- <button type="button" class="filter-pill" data-pace="all">All Offerings</button> -->
+              <button type="button" class="filter-pill active" data-pace="5x">
                 ⚡ 5x / week (Intensive)
               </button>
               <button type="button" class="filter-pill" data-pace="3x">
-                📅 3x / week (Semi-Intensive)
+                📅 3x / week
               </button>
             </div>
           </div>
@@ -369,9 +369,9 @@
                 <tr>
                   <th>Level</th>
                   <th>Weekly Pace</th>
-                  <th>Days</th>
+                  <th>Class Days</th>
                   <th>Times</th>
-                  <th>Duration / Start Date</th>
+                  <th>Start / End Date</th>
                   <th>Registration</th>
                 </tr>
               </thead>
@@ -381,23 +381,41 @@
                   <td><strong>A1</strong> · Beginner</td>
                   <td>
                     <span class="pace-tag pace-tag--5x"
-                      >5x / week (Intensive)</span
+                      >5x/week (Intensive)</span
                     >
                   </td>
                   <td>Mo – Fri</td>
+                  <td>Morning: 08:00 – 11:00<br />Evening: 18:00 – 21:00</td>
                   <td>
-                    Morning batch: 08:00 – 11:00<br />Evening batch: 18:00 –
-                    21:00
-                  </td>
-                  <td>
-                    28 Sep 2026 – 27 Nov 2026<br /><small class="text-sub"
-                      >8 weeks · Schedule confirmed</small
-                    >
+                    28 Sep 2026 <br />
+                    27 Nov 2026
                   </td>
                   <td>
                     <a href="registration.html?course=A1"
                       ><span class="status-badge status-badge--confirmed"
-                        >Open</span
+                        >Open
+                      </span></a
+                    >
+                  </td>
+                </tr>
+                <!-- A2 5x -->
+                <tr data-pace="5x">
+                  <td><strong>A2</strong> · Elementary</td>
+                  <td>
+                    <span class="pace-tag pace-tag--5x"
+                      >5x/week (Intensive)</span
+                    >
+                  </td>
+                  <td>Mo – Fri</td>
+                  <td>
+                    Morning: 08:00–11:00 <br />
+                    Evening: 18:00–21:00
+                  </td>
+                  <td>Forming Soon</td>
+                  <td>
+                    <a href="registration.html?course=A2"
+                      ><span class="status-badge status-badge--forming"
+                        >Register Interest</span
                       ></a
                     >
                   </td>
@@ -407,17 +425,17 @@
                   <td><strong>A1</strong> · Beginner</td>
                   <td>
                     <span class="pace-tag pace-tag--3x"
-                      >3x / week (Semi-Intensive)</span
+                      >3x / week </span
                     >
                   </td>
-                  <td><small class="tet-sub"> Mo, Tue & Wed </small></td>
+                  <td> Mo, Tue & Wed </td>
                   <td>
-                    Evening batch: 18:00 – 21:00<br /><small class="text-sub"
+                    Evening: 18:00 – 21:00<br /><small class="text-sub"
                       >Morning batch on request</small
                     >
                   </td>
                   <td>
-                    Forming Soon<br /><small class="text-sub">≈ 14 weeks</small>
+                    Forming Soon
                   </td>
                   <td>
                     <a href="registration.html?course=A1"
@@ -427,39 +445,19 @@
                     >
                   </td>
                 </tr>
-                <!-- A2 5x -->
-                <tr data-pace="5x">
-                  <td><strong>A2</strong> · Elementary</td>
-                  <td>
-                    <span class="pace-tag pace-tag--5x"
-                      >5x / week (Intensive)</span
-                    >
-                  </td>
-                  <td>Mo – Fri</td>
-                  <td>Morning (08:00–11:00) / Evening (18:00–21:00)</td>
-                  <td>
-                    Forming Soon<br /><small class="text-sub">≈ 8 weeks</small>
-                  </td>
-                  <td>
-                    <a href="registration.html?course=A2"
-                      ><span class="status-badge status-badge--forming"
-                        >Register Interest</span
-                      ></a
-                    >
-                  </td>
-                </tr>
+
                 <!-- A2 3x -->
-                <tr data-pace="3x">
+                <tr data-pace="3x" class="is-hidden">
                   <td><strong>A2</strong> · Elementary</td>
                   <td>
                     <span class="pace-tag pace-tag--3x"
-                      >3x / week (Semi-Intensive)</span
+                      >3x / week</span
                     >
                   </td>
-                  <td>Mon, Wed, Fri</td>
-                  <td>Morning / Afternoon / Evening</td>
+                  <td>Mo, Tue & Wed</td>
+                  <td>Evening: 18:00 – 21:00 <br><small class="text-sub">Morning batch on request</small></td>
                   <td>
-                    Forming Soon<br /><small class="text-sub">≈ 14 weeks</small>
+                    Forming Soon</small>
                   </td>
                   <td>
                     <a href="registration.html?course=A2"
@@ -470,17 +468,17 @@
                   </td>
                 </tr>
                 <!-- B1 -->
-                <tr data-pace="3x">
+                <tr data-pace="3x" class="is-hidden">
                   <td><strong>B1</strong> · Intermediate</td>
                   <td>
                     <span class="pace-tag pace-tag--3x"
-                      >3x / week (Semi-Intensive)</span
+                      >3x / week</span
                     >
                   </td>
-                  <td>Mon, Wed, Fri</td>
-                  <td>Morning / Afternoon / Evening</td>
+                  <td>Mo, Tue & Wed</td>
+                  <td>Evening: 18:00 – 21:00 <br><small class="text-sub">Morning batch on request</small></td>
                   <td>
-                    Forming Soon<br /><small class="text-sub">≈ 14 weeks</small>
+                    Forming Soon
                   </td>
                   <td>
                     <a href="registration.html?course=B1"
@@ -491,17 +489,17 @@
                   </td>
                 </tr>
                 <!-- B2 -->
-                <tr data-pace="3x">
+                <tr data-pace="3x" class="is-hidden">
                   <td><strong>B2</strong> · Upper Intermediate</td>
                   <td>
                     <span class="pace-tag pace-tag--3x"
-                      >3x / week (Semi-Intensive)</span
+                      >3x / week</span
                     >
                   </td>
-                  <td>Mon, Wed, Fri</td>
-                  <td>Evening batch: 18:00 – 21:00</td>
+                  <td>Mo, Tue & Wed</td>
+                  <td>Evening: 18:00 – 21:00 <br> <small>Morning batch on request</small></td>
                   <td>
-                    Forming Soon<br /><small class="text-sub">≈ 20 weeks</small>
+                    Forming Soon
                   </td>
                   <td>
                     <a href="registration.html?course=B2"
@@ -512,17 +510,17 @@
                   </td>
                 </tr>
                 <!-- Exam Prep -->
-                <tr data-pace="3x">
+                <tr data-pace="3x" class="is-hidden">
                   <td><strong>Exam Prep</strong> · Goethe</td>
                   <td>
                     <span class="pace-tag pace-tag--3x"
-                      >3x / week (Intensive Prep)</span
+                      >3x / week </span
                     >
                   </td>
-                  <td>Mon, Wed, Fri</td>
-                  <td>Evening / Weekend slots</td>
+                  <td>Mo, Tue & Wed</td>
+                  <td>Evening: 18:00 – 21:00 <br><small>Morning batch on request</small></td>
                   <td>
-                    Forming Soon<br /><small class="text-sub">≈ 6 weeks</small>
+                    Forming Soon<br /><small class="text-sub"> 2 weeks</small>
                   </td>
                   <td>
                     <a href="registration.html?course=Exam-Prep"
@@ -543,7 +541,7 @@
                 <strong>Confirmed vs. Forming:</strong>
                 The A1 Intensive batch has locked dates (starts
                 <strong>28 Sep 2026</strong>). For 3x/wk and A2–B2, batches
-                launch as soon as 5–8 students register for a preferred
+                launch as soon as 8 students register for a preferred
                 timeslot.
               </div>
             </div>
