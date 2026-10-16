@@ -92,7 +92,14 @@
 
   function parseDateKey(keyStr) {
     var parts = keyStr.split("-");
-    return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10), 12, 0, 0);
+    return new Date(
+      parseInt(parts[0], 10),
+      parseInt(parts[1], 10) - 1,
+      parseInt(parts[2], 10),
+      12,
+      0,
+      0,
+    );
   }
 
   function getWeekdayName(dateObj) {
@@ -151,7 +158,7 @@
       dateParts[1] - 1,
       dateParts[2],
       timeParts[0],
-      timeParts[1]
+      timeParts[1],
     );
     var timestamp = target;
 
@@ -162,7 +169,7 @@
         zoned.month - 1,
         zoned.day,
         zoned.hour,
-        zoned.minute
+        zoned.minute,
       );
       var adjustment = target - represented;
       if (adjustment === 0) break;
@@ -180,7 +187,10 @@
         String(parts.month).padStart(2, "0"),
         String(parts.day).padStart(2, "0"),
       ].join("-"),
-      time: String(parts.hour).padStart(2, "0") + ":" + String(parts.minute).padStart(2, "0"),
+      time:
+        String(parts.hour).padStart(2, "0") +
+        ":" +
+        String(parts.minute).padStart(2, "0"),
     };
   }
 
@@ -189,25 +199,47 @@
     var weekday = getWeekdayName(d);
     var dayConfig = blockerData.weeklySchedule[weekday];
     if (!dayConfig || !dayConfig.active) return [];
-    if (blockerData.blockedDates.some(function (b) { return b.date === sourceDate; })) return [];
+    if (
+      blockerData.blockedDates.some(function (b) {
+        return b.date === sourceDate;
+      })
+    )
+      return [];
 
     var startMin = timeStrToMinutes(dayConfig.start);
     var endMin = timeStrToMinutes(dayConfig.end);
     var duration = blockerData.settings.slotDurationMinutes || 45;
-    var buffer = blockerData.settings.bufferMinutes !== undefined ? blockerData.settings.bufferMinutes : 15;
+    var buffer =
+      blockerData.settings.bufferMinutes !== undefined
+        ? blockerData.settings.bufferMinutes
+        : 15;
     var step = duration + buffer;
     var sourceSlots = [];
 
     for (var cur = startMin; cur + duration <= endMin; cur += step) {
       var sourceTime = minutesToTimeStr(cur);
-      if (blockerData.blockedSlots.some(function (s) {
-        return s.date === sourceDate && s.time === sourceTime;
-      })) continue;
-      if (bookings.some(function (b) {
-        return b.date === sourceDate && b.time === sourceTime && b.status !== "cancelled";
-      })) continue;
+      if (
+        blockerData.blockedSlots.some(function (s) {
+          return s.date === sourceDate && s.time === sourceTime;
+        })
+      )
+        continue;
+      if (
+        bookings.some(function (b) {
+          return (
+            b.date === sourceDate &&
+            b.time === sourceTime &&
+            b.status !== "cancelled"
+          );
+        })
+      )
+        continue;
 
-      var startAt = wallTimeToTimestamp(sourceDate, sourceTime, scheduleTimeZone);
+      var startAt = wallTimeToTimestamp(
+        sourceDate,
+        sourceTime,
+        scheduleTimeZone,
+      );
       var endAt = startAt + duration * 60 * 1000;
       var visitorStart = formatTimeInVisitorZone(startAt);
       var visitorEnd = formatTimeInVisitorZone(endAt);
@@ -232,29 +264,31 @@
     var localDayStart = new Date(
       localDate.getFullYear(),
       localDate.getMonth(),
-      localDate.getDate()
+      localDate.getDate(),
     ).getTime();
     var localDayEnd = new Date(
       localDate.getFullYear(),
       localDate.getMonth(),
-      localDate.getDate() + 1
+      localDate.getDate() + 1,
     ).getTime();
     var minNoticeHours = blockerData.settings.minNoticeHours || 24;
     var earliestAllowedTime = Date.now() + minNoticeHours * 60 * 60 * 1000;
     var availableSlots = [];
 
     for (var dayOffset = -2; dayOffset <= 2; dayOffset++) {
-      buildSourceSlots(dateKeyOffset(dateKey, dayOffset)).forEach(function (slot) {
-        var startAt = new Date(slot.startAt).getTime();
-        if (
-          slot.localDate === dateKey &&
-          startAt >= earliestAllowedTime &&
-          startAt >= localDayStart &&
-          startAt < localDayEnd
-        ) {
-          availableSlots.push(slot);
-        }
-      });
+      buildSourceSlots(dateKeyOffset(dateKey, dayOffset)).forEach(
+        function (slot) {
+          var startAt = new Date(slot.startAt).getTime();
+          if (
+            slot.localDate === dateKey &&
+            startAt >= earliestAllowedTime &&
+            startAt >= localDayStart &&
+            startAt < localDayEnd
+          ) {
+            availableSlots.push(slot);
+          }
+        },
+      );
     }
 
     return availableSlots.sort(function (a, b) {
@@ -289,8 +323,18 @@
     grid.textContent = "";
 
     var monthNames = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
     ];
     title.textContent = monthNames[currentMonth] + " " + currentYear;
 
@@ -307,9 +351,18 @@
       grid.appendChild(emptyCell);
     }
 
-    var todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
+    var todayStart = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+      0,
+      0,
+      0,
+    );
     var maxDays = blockerData.settings.maxAdvanceDays || 60;
-    var maxDate = new Date(todayStart.getTime() + maxDays * 24 * 60 * 60 * 1000);
+    var maxDate = new Date(
+      todayStart.getTime() + maxDays * 24 * 60 * 60 * 1000,
+    );
 
     for (var day = 1; day <= daysInMonth; day++) {
       var cellDate = new Date(currentYear, currentMonth, day);
@@ -391,7 +444,8 @@
 
     var slots = getAvailableSlots(selectedDateStr);
     if (slots.length === 0) {
-      container.innerHTML = '<div style="grid-column: 1 / -1; padding: 24px; text-align: center; color: var(--slate); background: var(--cream); border-radius: 8px;">No slots are currently available for this date. Please pick another day on the calendar.</div>';
+      container.innerHTML =
+        '<div style="grid-column: 1 / -1; padding: 24px; text-align: center; color: var(--slate); background: var(--cream); border-radius: 8px;">No slots are currently available for this date. Please pick another day on the calendar.</div>';
       setStep(2);
       return;
     }
@@ -407,7 +461,8 @@
 
       var durSpan = document.createElement("span");
       durSpan.className = "pub-slot-duration";
-      durSpan.textContent = slot.duration + " mins (until " + slot.endTime + ")";
+      durSpan.textContent =
+        slot.duration + " mins (until " + slot.endTime + ")";
 
       btn.append(timeSpan, durSpan);
 
@@ -427,7 +482,13 @@
     var dtDisplay = document.getElementById("step-3-datetime-display");
     if (!dtDisplay || !selectedDateStr || !selectedSlot) return;
 
-    dtDisplay.textContent = formatDisplayDate(selectedDateStr) + " at " + selectedSlot.time + " (" + selectedSlot.duration + " mins)";
+    dtDisplay.textContent =
+      formatDisplayDate(selectedDateStr) +
+      " at " +
+      selectedSlot.time +
+      " (" +
+      selectedSlot.duration +
+      " mins)";
     setStep(3);
   }
 
@@ -496,7 +557,16 @@
       try {
         var payload = new FormData();
         payload.append("access_key", WEB3FORMS_KEY);
-        payload.append("subject", "New 1-on-1 Consultation: " + name + " (" + selectedSlot.localDate + " at " + selectedSlot.time + ")");
+        payload.append(
+          "subject",
+          "New 1-on-1 Consultation: " +
+            name +
+            " (" +
+            selectedSlot.localDate +
+            " at " +
+            selectedSlot.time +
+            ")",
+        );
         payload.append("from_name", name);
         payload.append("email", email);
         payload.append(
@@ -508,13 +578,31 @@
             "Email: " + email,
             "Phone: " + phone,
             "Topic: " + topic,
-            "Visitor local date: " + selectedSlot.localDate + " (" + formatDisplayDate(selectedSlot.localDate) + ")",
-            "Visitor local time: " + selectedSlot.time + " - " + selectedSlot.endTime + " (" + selectedSlot.duration + " mins, " + visitorTimeZone + ")",
-            "Schedule time: " + selectedSlot.sourceDate + " at " + selectedSlot.sourceTime + " (" + scheduleTimeZone + ")",
+            "Visitor local date: " +
+              selectedSlot.localDate +
+              " (" +
+              formatDisplayDate(selectedSlot.localDate) +
+              ")",
+            "Visitor local time: " +
+              selectedSlot.time +
+              " - " +
+              selectedSlot.endTime +
+              " (" +
+              selectedSlot.duration +
+              " mins, " +
+              visitorTimeZone +
+              ")",
+            "Schedule time: " +
+              selectedSlot.sourceDate +
+              " at " +
+              selectedSlot.sourceTime +
+              " (" +
+              scheduleTimeZone +
+              ")",
             "Notes: " + (notes || "None provided"),
             "",
             "Sent from the Deutsch am Abend meeting scheduler.",
-          ].join("\n")
+          ].join("\n"),
         );
 
         await fetch("https://api.web3forms.com/submit", {
@@ -544,28 +632,57 @@
     var confTopic = document.getElementById("conf-topic");
     var confLocation = document.getElementById("conf-location");
 
-    if (confDate) confDate.textContent = formatDisplayDate(b.localDate || b.date);
+    if (confDate)
+      confDate.textContent = formatDisplayDate(b.localDate || b.date);
     if (confTime) {
       confTime.textContent =
         (b.localTime || b.time) +
-        " (" + b.duration + " minutes, " + (b.visitorTimeZone || scheduleTimeZone) + ")";
+        " (" +
+        b.duration +
+        " minutes, " +
+        (b.visitorTimeZone || scheduleTimeZone) +
+        ")";
     }
     if (confName) confName.textContent = b.fullName;
     if (confTopic) confTopic.textContent = b.topic;
-    if (confLocation) confLocation.textContent = blockerData.settings.meetingLocation || "Online via Google Meet";
+    if (confLocation)
+      confLocation.textContent =
+        blockerData.settings.meetingLocation || "Online via Google Meet";
 
     // Google Calendar Link
     var gcalBtn = document.getElementById("btn-add-gcal");
     if (gcalBtn) {
       var startTimestamp = new Date(b.startAt).getTime();
       var startDtStr = formatUtcCalendarTime(startTimestamp);
-      var endDtStr = formatUtcCalendarTime(startTimestamp + (b.duration || 45) * 60 * 1000);
+      var endDtStr = formatUtcCalendarTime(
+        startTimestamp + (b.duration || 45) * 60 * 1000,
+      );
 
-      var gcalTitle = encodeURIComponent(blockerData.settings.meetingTitle || "1-on-1 German Consultation");
-      var gcalDetails = encodeURIComponent("Consultation for " + b.fullName + " on " + b.topic + ". Deutsch am Abend German Community.");
-      var gcalLoc = encodeURIComponent(blockerData.settings.meetingLocation || "Online via Google Meet");
+      var gcalTitle = encodeURIComponent(
+        blockerData.settings.meetingTitle || "1-on-1 German Consultation",
+      );
+      var gcalDetails = encodeURIComponent(
+        "Consultation for " +
+          b.fullName +
+          " on " +
+          b.topic +
+          ". Deutsch am Abend German Community.",
+      );
+      var gcalLoc = encodeURIComponent(
+        blockerData.settings.meetingLocation || "Online via Google Meet",
+      );
 
-      gcalBtn.href = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + gcalTitle + "&dates=" + startDtStr + "/" + endDtStr + "&details=" + gcalDetails + "&location=" + gcalLoc;
+      gcalBtn.href =
+        "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" +
+        gcalTitle +
+        "&dates=" +
+        startDtStr +
+        "/" +
+        endDtStr +
+        "&details=" +
+        gcalDetails +
+        "&location=" +
+        gcalLoc;
     }
 
     // ICS File Download
@@ -580,13 +697,18 @@
   }
 
   function formatUtcCalendarTime(timestamp) {
-    return new Date(timestamp).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+    return new Date(timestamp)
+      .toISOString()
+      .replace(/[-:]/g, "")
+      .replace(/\.\d{3}/, "");
   }
 
   function downloadIcs(b) {
     var startTimestamp = new Date(b.startAt).getTime();
     var startDtStr = formatUtcCalendarTime(startTimestamp);
-    var endDtStr = formatUtcCalendarTime(startTimestamp + (b.duration || 45) * 60 * 1000);
+    var endDtStr = formatUtcCalendarTime(
+      startTimestamp + (b.duration || 45) * 60 * 1000,
+    );
 
     var icsContent = [
       "BEGIN:VCALENDAR",
@@ -596,12 +718,20 @@
       "METHOD:REQUEST",
       "BEGIN:VEVENT",
       "UID:" + b.id + "@deutschamabend.org",
-      "DTSTAMP:" + new Date().toISOString().replace(/[-:]/g, "").slice(0, 15) + "Z",
+      "DTSTAMP:" +
+        new Date().toISOString().replace(/[-:]/g, "").slice(0, 15) +
+        "Z",
       "DTSTART:" + startDtStr,
       "DTEND:" + endDtStr,
-      "SUMMARY:" + (blockerData.settings.meetingTitle || "1-on-1 German Consultation"),
-      "DESCRIPTION:Consultation with Deutsch am Abend advisor for " + b.fullName + " (" + b.topic + ").",
-      "LOCATION:" + (blockerData.settings.meetingLocation || "Online via Google Meet"),
+      "SUMMARY:" +
+        (blockerData.settings.meetingTitle || "1-on-1 German Consultation"),
+      "DESCRIPTION:Consultation with Deutsch am Abend advisor for " +
+        b.fullName +
+        " (" +
+        b.topic +
+        ").",
+      "LOCATION:" +
+        (blockerData.settings.meetingLocation || "Online via Google Meet"),
       "STATUS:CONFIRMED",
       "END:VEVENT",
       "END:VCALENDAR",
@@ -619,11 +749,7 @@
   var visitorTimeZoneNote = document.getElementById("visitor-timezone-note");
   if (visitorTimeZoneNote) {
     visitorTimeZoneNote.textContent =
-      "Times are shown in your time zone (" +
-      visitorTimeZone +
-      "). Availability is based on " +
-      scheduleTimeZone +
-      ". Consultations are held on German local time (Europe/Berlin, CET/CEST).";
+      "Times are shown in your time zone (" + visitorTimeZone + ").";
   }
 
   var btnBookAnother = document.getElementById("btn-book-another");
