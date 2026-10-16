@@ -53,6 +53,11 @@
   // State
   var blockerData = loadBlockerData();
   var bookings = loadBookings();
+  var adminTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  if (!blockerData.settings.timeZone) {
+    blockerData.settings.timeZone = adminTimeZone;
+    localStorage.setItem(BLOCKER_STORAGE_KEY, JSON.stringify(blockerData));
+  }
 
   // Calendar navigation state
   var today = new Date();
@@ -681,6 +686,14 @@
     if (locationInput) locationInput.value = s.meetingLocation || "";
   }
 
+  var timeZoneNote = document.getElementById("admin-timezone-note");
+  if (timeZoneNote) {
+    timeZoneNote.textContent =
+      "Availability, blocked dates, and bookings use " +
+      blockerData.settings.timeZone +
+      ". Visitors see available times in their own time zone. Consultations are held on German local time (Europe/Berlin, CET/CEST).";
+  }
+
   document.getElementById("btn-save-settings").addEventListener("click", function () {
     blockerData.settings = {
       slotDurationMinutes: parseInt(document.getElementById("slot-duration").value, 10),
@@ -689,6 +702,7 @@
       maxAdvanceDays: parseInt(document.getElementById("max-advance").value, 10),
       meetingTitle: document.getElementById("meeting-title").value.trim(),
       meetingLocation: document.getElementById("meeting-location").value.trim(),
+      timeZone: blockerData.settings.timeZone || adminTimeZone,
     };
 
     saveBlockerData();

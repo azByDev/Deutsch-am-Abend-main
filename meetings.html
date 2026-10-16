@@ -135,7 +135,7 @@
 
       .pub-cal-weekdays {
         display: grid;
-        grid-template-columns: repeat(7, 1fr);
+        grid-template-columns: repeat(7, minmax(0, 1fr));
         text-align: center;
         font-family: var(--mono);
         font-size: 0.72rem;
@@ -146,13 +146,15 @@
       }
       .pub-cal-grid {
         display: grid;
-        grid-template-columns: repeat(7, 1fr);
+        grid-template-columns: repeat(7, minmax(0, 1fr));
         gap: 6px;
         margin-top: 10px;
+        min-width: 0;
       }
       .pub-cal-day {
         aspect-ratio: 1;
         min-height: 48px;
+        min-width: 0;
         border-radius: 8px;
         background: var(--cream);
         border: 1.5px solid transparent;
@@ -571,6 +573,11 @@
                     Blocked / Unavailable
                   </div>
                 </div>
+                <p class="cms-help" style="font-size: 0.82rem; margin: 14px 0 0">
+                  Consultation availability follows German local time
+                  (Europe/Berlin, CET/CEST). Available times are shown in your
+                  local time zone.
+                </p>
               </div>
 
               <!-- STEP 2: TIME SLOT SELECTION -->
@@ -604,6 +611,11 @@
                 >
                   Select an open time slot for your consultation call:
                 </p>
+                <p
+                  class="cms-help"
+                  id="visitor-timezone-note"
+                  style="font-size: 0.82rem; margin: -8px 0 14px"
+                ></p>
 
                 <div class="pub-slots-grid" id="pub-slots-container">
                   <!-- Generated dynamically -->

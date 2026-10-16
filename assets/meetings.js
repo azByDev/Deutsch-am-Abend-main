@@ -37,6 +37,8 @@
 
   var blockerData = loadBlockerData();
   var bookings = loadBookings();
+  var visitorTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  var scheduleTimeZone = blockerData.settings.timeZone || visitorTimeZone;
 
   // Booking state machine
   var today = new Date();
@@ -118,73 +120,146 @@
     return String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0");
   }
 
-  // Calculate available slots strictly filtering out blocked dates & blocked slots
-  function getAvailableSlots(dateKey) {
-    var d = parseDateKey(dateKey);
+  function dateKeyOffset(dateKey, offset) {
+    var date = parseDateKey(dateKey);
+    date.setDate(date.getDate() + offset);
+    return formatDateKey(date);
+  }
+
+  function getTimeZoneParts(timestamp, timeZone) {
+    var parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: timeZone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+    }).formatToParts(new Date(timestamp));
+    var values = {};
+    parts.forEach(function (part) {
+      if (part.type !== "literal") values[part.type] = parseInt(part.value, 10);
+    });
+    return values;
+  }
+
+  function wallTimeToTimestamp(dateKey, timeStr, timeZone) {
+    var dateParts = dateKey.split("-").map(Number);
+    var timeParts = timeStr.split(":").map(Number);
+    var target = Date.UTC(
+      dateParts[0],
+      dateParts[1] - 1,
+      dateParts[2],
+      timeParts[0],
+      timeParts[1]
+    );
+    var timestamp = target;
+
+    for (var attempt = 0; attempt < 4; attempt++) {
+      var zoned = getTimeZoneParts(timestamp, timeZone);
+      var represented = Date.UTC(
+        zoned.year,
+        zoned.month - 1,
+        zoned.day,
+        zoned.hour,
+        zoned.minute
+      );
+      var adjustment = target - represented;
+      if (adjustment === 0) break;
+      timestamp += adjustment;
+    }
+
+    return timestamp;
+  }
+
+  function formatTimeInVisitorZone(timestamp) {
+    var parts = getTimeZoneParts(timestamp, visitorTimeZone);
+    return {
+      date: [
+        parts.year,
+        String(parts.month).padStart(2, "0"),
+        String(parts.day).padStart(2, "0"),
+      ].join("-"),
+      time: String(parts.hour).padStart(2, "0") + ":" + String(parts.minute).padStart(2, "0"),
+    };
+  }
+
+  function buildSourceSlots(sourceDate) {
+    var d = parseDateKey(sourceDate);
     var weekday = getWeekdayName(d);
     var dayConfig = blockerData.weeklySchedule[weekday];
-
-    // Check if day is active
     if (!dayConfig || !dayConfig.active) return [];
-
-    // Check if full day is blocked
-    var isDayFullyBlocked = blockerData.blockedDates.some(function (b) {
-      return b.date === dateKey;
-    });
-    if (isDayFullyBlocked) return [];
-
-    // Check minimum notice hours
-    var now = new Date();
-    var minNoticeHours = blockerData.settings.minNoticeHours || 24;
-    var earliestAllowedTime = new Date(now.getTime() + minNoticeHours * 60 * 60 * 1000);
+    if (blockerData.blockedDates.some(function (b) { return b.date === sourceDate; })) return [];
 
     var startMin = timeStrToMinutes(dayConfig.start);
     var endMin = timeStrToMinutes(dayConfig.end);
     var duration = blockerData.settings.slotDurationMinutes || 45;
     var buffer = blockerData.settings.bufferMinutes !== undefined ? blockerData.settings.bufferMinutes : 15;
     var step = duration + buffer;
+    var sourceSlots = [];
 
-    var openSlots = [];
-    var cur = startMin;
+    for (var cur = startMin; cur + duration <= endMin; cur += step) {
+      var sourceTime = minutesToTimeStr(cur);
+      if (blockerData.blockedSlots.some(function (s) {
+        return s.date === sourceDate && s.time === sourceTime;
+      })) continue;
+      if (bookings.some(function (b) {
+        return b.date === sourceDate && b.time === sourceTime && b.status !== "cancelled";
+      })) continue;
 
-    while (cur + duration <= endMin) {
-      var timeStr = minutesToTimeStr(cur);
-      var endTimeStr = minutesToTimeStr(cur + duration);
+      var startAt = wallTimeToTimestamp(sourceDate, sourceTime, scheduleTimeZone);
+      var endAt = startAt + duration * 60 * 1000;
+      var visitorStart = formatTimeInVisitorZone(startAt);
+      var visitorEnd = formatTimeInVisitorZone(endAt);
 
-      // Check slot datetime vs minimum notice
-      var slotDateObj = new Date(
-        d.getFullYear(),
-        d.getMonth(),
-        d.getDate(),
-        Math.floor(cur / 60),
-        cur % 60,
-        0
-      );
-
-      if (slotDateObj >= earliestAllowedTime) {
-        // Check if individual slot is blocked in CMS
-        var isSlotBlocked = blockerData.blockedSlots.some(function (s) {
-          return s.date === dateKey && s.time === timeStr;
-        });
-
-        // Check if already booked
-        var isBooked = bookings.some(function (b) {
-          return b.date === dateKey && b.time === timeStr && b.status !== "cancelled";
-        });
-
-        if (!isSlotBlocked && !isBooked) {
-          openSlots.push({
-            time: timeStr,
-            endTime: endTimeStr,
-            duration: duration,
-          });
-        }
-      }
-
-      cur += step;
+      sourceSlots.push({
+        sourceDate: sourceDate,
+        sourceTime: sourceTime,
+        startAt: new Date(startAt).toISOString(),
+        localDate: visitorStart.date,
+        time: visitorStart.time,
+        endTime: visitorEnd.time,
+        duration: duration,
+      });
     }
 
-    return openSlots;
+    return sourceSlots;
+  }
+
+  // Return slots that fall on the visitor's selected local calendar date.
+  function getAvailableSlots(dateKey) {
+    var localDate = parseDateKey(dateKey);
+    var localDayStart = new Date(
+      localDate.getFullYear(),
+      localDate.getMonth(),
+      localDate.getDate()
+    ).getTime();
+    var localDayEnd = new Date(
+      localDate.getFullYear(),
+      localDate.getMonth(),
+      localDate.getDate() + 1
+    ).getTime();
+    var minNoticeHours = blockerData.settings.minNoticeHours || 24;
+    var earliestAllowedTime = Date.now() + minNoticeHours * 60 * 60 * 1000;
+    var availableSlots = [];
+
+    for (var dayOffset = -2; dayOffset <= 2; dayOffset++) {
+      buildSourceSlots(dateKeyOffset(dateKey, dayOffset)).forEach(function (slot) {
+        var startAt = new Date(slot.startAt).getTime();
+        if (
+          slot.localDate === dateKey &&
+          startAt >= earliestAllowedTime &&
+          startAt >= localDayStart &&
+          startAt < localDayEnd
+        ) {
+          availableSlots.push(slot);
+        }
+      });
+    }
+
+    return availableSlots.sort(function (a, b) {
+      return a.startAt.localeCompare(b.startAt);
+    });
   }
 
   // STEP NAVIGATION
@@ -396,8 +471,13 @@
 
       var newBooking = {
         id: "consult-" + Date.now(),
-        date: selectedDateStr,
-        time: selectedSlot.time,
+        date: selectedSlot.sourceDate,
+        time: selectedSlot.sourceTime,
+        localDate: selectedSlot.localDate,
+        localTime: selectedSlot.time,
+        timeZone: scheduleTimeZone,
+        visitorTimeZone: visitorTimeZone,
+        startAt: selectedSlot.startAt,
         duration: selectedSlot.duration,
         fullName: name,
         email: email,
@@ -416,7 +496,7 @@
       try {
         var payload = new FormData();
         payload.append("access_key", WEB3FORMS_KEY);
-        payload.append("subject", "New 1-on-1 Consultation: " + name + " (" + selectedDateStr + " at " + selectedSlot.time + ")");
+        payload.append("subject", "New 1-on-1 Consultation: " + name + " (" + selectedSlot.localDate + " at " + selectedSlot.time + ")");
         payload.append("from_name", name);
         payload.append("email", email);
         payload.append(
@@ -428,8 +508,9 @@
             "Email: " + email,
             "Phone: " + phone,
             "Topic: " + topic,
-            "Date: " + selectedDateStr + " (" + formatDisplayDate(selectedDateStr) + ")",
-            "Time: " + selectedSlot.time + " - " + selectedSlot.endTime + " (" + selectedSlot.duration + " mins)",
+            "Visitor local date: " + selectedSlot.localDate + " (" + formatDisplayDate(selectedSlot.localDate) + ")",
+            "Visitor local time: " + selectedSlot.time + " - " + selectedSlot.endTime + " (" + selectedSlot.duration + " mins, " + visitorTimeZone + ")",
+            "Schedule time: " + selectedSlot.sourceDate + " at " + selectedSlot.sourceTime + " (" + scheduleTimeZone + ")",
             "Notes: " + (notes || "None provided"),
             "",
             "Sent from the Deutsch am Abend meeting scheduler.",
@@ -463,8 +544,12 @@
     var confTopic = document.getElementById("conf-topic");
     var confLocation = document.getElementById("conf-location");
 
-    if (confDate) confDate.textContent = formatDisplayDate(b.date);
-    if (confTime) confTime.textContent = b.time + " (" + b.duration + " minutes)";
+    if (confDate) confDate.textContent = formatDisplayDate(b.localDate || b.date);
+    if (confTime) {
+      confTime.textContent =
+        (b.localTime || b.time) +
+        " (" + b.duration + " minutes, " + (b.visitorTimeZone || scheduleTimeZone) + ")";
+    }
     if (confName) confName.textContent = b.fullName;
     if (confTopic) confTopic.textContent = b.topic;
     if (confLocation) confLocation.textContent = blockerData.settings.meetingLocation || "Online via Google Meet";
@@ -472,10 +557,9 @@
     // Google Calendar Link
     var gcalBtn = document.getElementById("btn-add-gcal");
     if (gcalBtn) {
-      var startDtStr = b.date.replace(/-/g, "") + "T" + b.time.replace(":", "") + "00";
-      var endMinutes = timeStrToMinutes(b.time) + (b.duration || 45);
-      var endSlotTime = minutesToTimeStr(endMinutes);
-      var endDtStr = b.date.replace(/-/g, "") + "T" + endSlotTime.replace(":", "") + "00";
+      var startTimestamp = new Date(b.startAt).getTime();
+      var startDtStr = formatUtcCalendarTime(startTimestamp);
+      var endDtStr = formatUtcCalendarTime(startTimestamp + (b.duration || 45) * 60 * 1000);
 
       var gcalTitle = encodeURIComponent(blockerData.settings.meetingTitle || "1-on-1 German Consultation");
       var gcalDetails = encodeURIComponent("Consultation for " + b.fullName + " on " + b.topic + ". Deutsch am Abend German Community.");
@@ -495,11 +579,14 @@
     setStep(4);
   }
 
+  function formatUtcCalendarTime(timestamp) {
+    return new Date(timestamp).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  }
+
   function downloadIcs(b) {
-    var startDtStr = b.date.replace(/-/g, "") + "T" + b.time.replace(":", "") + "00";
-    var endMinutes = timeStrToMinutes(b.time) + (b.duration || 45);
-    var endSlotTime = minutesToTimeStr(endMinutes);
-    var endDtStr = b.date.replace(/-/g, "") + "T" + endSlotTime.replace(":", "") + "00";
+    var startTimestamp = new Date(b.startAt).getTime();
+    var startDtStr = formatUtcCalendarTime(startTimestamp);
+    var endDtStr = formatUtcCalendarTime(startTimestamp + (b.duration || 45) * 60 * 1000);
 
     var icsContent = [
       "BEGIN:VCALENDAR",
@@ -527,6 +614,16 @@
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  }
+
+  var visitorTimeZoneNote = document.getElementById("visitor-timezone-note");
+  if (visitorTimeZoneNote) {
+    visitorTimeZoneNote.textContent =
+      "Times are shown in your time zone (" +
+      visitorTimeZone +
+      "). Availability is based on " +
+      scheduleTimeZone +
+      ". Consultations are held on German local time (Europe/Berlin, CET/CEST).";
   }
 
   var btnBookAnother = document.getElementById("btn-book-another");
