@@ -2,7 +2,7 @@
 -- Run this in the Supabase SQL Editor to enable shared meeting data.
 
 create table if not exists public.daa_admin_users (
-  bb8e60e7-5fac-4d5f-91e8-9cbbbb900a82 primary key references auth.users(id) on delete cascade
+  user_id uuid primary key references auth.users(id) on delete cascade
 );
 
 create table if not exists public.daa_meeting_settings (
