@@ -549,7 +549,22 @@
         createdAt: new Date().toISOString(),
       };
 
-      // Save locally
+      try {
+        if (window.DAAMeetingSync && window.DAAMeetingSync.isConfigured()) {
+          await window.DAAMeetingSync.createBooking(newBooking);
+        }
+      } catch (error) {
+        statusDiv.className = "form-status error";
+        statusDiv.textContent =
+          /duplicate key|unique constraint|not available/i.test(error.message)
+            ? "That time was just booked by someone else. Please choose another slot."
+            : "We could not save your booking. Please try again or contact us directly.";
+        console.error("Could not save consultation booking:", error);
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Confirm Consultation Reservation \u2192";
+        return;
+      }
+
       saveBooking(newBooking);
       latestConfirmedBooking = newBooking;
 
@@ -798,6 +813,37 @@
     });
   }
 
-  // Initial Calendar Render
-  renderCalendar();
+  async function initializeScheduler() {
+    var status = document.getElementById("booking-form-status");
+    if (window.DAAMeetingSync && window.DAAMeetingSync.isConfigured()) {
+      try {
+        var sharedBlocker = await window.DAAMeetingSync.loadBlockerData();
+        if (sharedBlocker) blockerData = sharedBlocker;
+        var fromDate = formatDateKey(new Date());
+        var untilDate = formatDateKey(
+          new Date(Date.now() + 366 * 24 * 60 * 60 * 1000),
+        );
+        bookings = await window.DAAMeetingSync.loadBookedSlots(fromDate, untilDate);
+        scheduleTimeZone = blockerData.settings.timeZone || visitorTimeZone;
+        if (status) {
+          status.className = "";
+          status.textContent = "";
+        }
+      } catch (error) {
+        console.error("Could not load shared consultation availability:", error);
+        if (status) {
+          status.className = "form-status error";
+          status.textContent =
+            "We could not load the current consultation schedule. Please refresh or contact us directly.";
+        }
+      }
+    } else if (status) {
+      status.className = "form-status error";
+      status.textContent =
+        "Shared booking sync is not configured yet; new reservations may not be visible on other devices.";
+    }
+    renderCalendar();
+  }
+
+  initializeScheduler();
 })();

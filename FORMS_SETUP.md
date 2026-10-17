@@ -56,27 +56,34 @@ or after uploading it to GitHub Pages or any other host.
 
 ---
 
-## Community groups setup
+## Community discussion groups
 
-The A1-A2-B1-B2 discussion groups use Supabase so posts and replies are shared
-between members and devices. The existing paid two-year Community Membership
-process is separate and still uses the signed PDF and proof-of-payment email
-process described above.
+The A1-A2-B1-B2 discussion group pages and self-service account access have
+been removed from the public site. The existing paid two-year Community
+Membership process is separate and still uses the signed PDF and
+proof-of-payment email process described above. The old group database schema
+has also been removed.
 
-1. Create a free Supabase project.
-2. In **Authentication > Providers > Email**, require email confirmation.
-3. In **Authentication > URL Configuration**, add the deployed site URL and
-   the local URL used for testing.
-4. Run `supabase-schema.sql` in the Supabase SQL Editor.
-5. Copy the project's URL and public `anon` key into
-   `assets/supabase-config.js`. The anon key is safe for browser use; never put
-   a service-role key in this repository.
-6. Open `community.html`, create an account, verify the email, choose a level,
-   and test a post and reply. Use two test accounts to confirm that each level
-   only sees its own feed.
+### Admin meeting synchronization
 
-The first version intentionally stores text posts and replies only. Attachments
-need a separate Supabase Storage bucket with file-size, content-type, and
-moderation policies before they should be enabled.
+Meeting availability and confirmed consultation slots are shared through
+Supabase. Booking contact details remain private to authorized admins.
+
+1. Run `supabase-meeting-sync.sql` in the Supabase SQL Editor. It is
+   self-contained and does not require the removed community-group schema.
+2. Create and verify the admin's Supabase account, then copy its user UUID from
+   **Authentication > Users**.
+3. Run the final `insert into public.daa_admin_users ...` statement shown in
+   `supabase-meeting-sync.sql`, replacing the placeholder with that UUID.
+4. Open the Meeting Blocker once and save the availability settings. The SQL
+   setup seeds a starter schedule; review and save the dates and hours you
+   actually offer before accepting bookings.
+5. Open `Admin/dashboard.html` and sign in with that account. The same login
+   protects the Events CMS and Meeting Blocker.
+6. Visit the public booking page and the admin dashboard from another browser
+   to confirm the shared schedule and booked slots are visible there.
+
+Never expose the service-role key in browser code. Only the public anon key
+belongs in `assets/supabase-config.js`.
 
 **Questions?** Email info.deutschamabend@gmail.com

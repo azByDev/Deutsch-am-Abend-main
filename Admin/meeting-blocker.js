@@ -3,6 +3,8 @@
 
   var BLOCKER_STORAGE_KEY = "daa_meeting_blocker_v1";
   var BOOKINGS_STORAGE_KEY = "daa_meeting_bookings_v1";
+  var storedBlockerRaw = localStorage.getItem(BLOCKER_STORAGE_KEY);
+  var hadStoredBookings = localStorage.getItem(BOOKINGS_STORAGE_KEY) !== null;
 
   var defaultBlockerData = {
     settings: {
@@ -84,6 +86,12 @@
 
   function saveBlockerData() {
     localStorage.setItem(BLOCKER_STORAGE_KEY, JSON.stringify(blockerData));
+    if (window.DAAMeetingSync && window.DAAMeetingSync.isConfigured()) {
+      window.DAAMeetingSync.saveBlockerData(blockerData).catch(function (error) {
+        console.error("Could not sync meeting availability:", error);
+        showBanner("Changes were saved in this browser but could not sync: " + error.message, "error");
+      });
+    }
     updateStats();
   }
 
@@ -100,6 +108,12 @@
 
   function saveBookings() {
     localStorage.setItem(BOOKINGS_STORAGE_KEY, JSON.stringify(bookings));
+    if (window.DAAMeetingSync && window.DAAMeetingSync.isConfigured()) {
+      window.DAAMeetingSync.saveBookings(bookings).catch(function (error) {
+        console.error("Could not sync consultation bookings:", error);
+        showBanner("Bookings were saved in this browser but could not sync: " + error.message, "error");
+      });
+    }
     updateStats();
   }
 
@@ -854,7 +868,13 @@
         }
 
         saveBlockerData();
-        saveBookings();
+        localStorage.setItem(BOOKINGS_STORAGE_KEY, JSON.stringify(bookings));
+        if (window.DAAMeetingSync && window.DAAMeetingSync.isConfigured()) {
+          window.DAAMeetingSync.replaceBookings(bookings).catch(function (error) {
+            console.error("Could not sync imported consultation bookings:", error);
+            showBanner("Blocker imported, but bookings could not be synced: " + error.message, "error");
+          });
+        }
         renderWeeklyScheduleTable();
         populateSettingsForm();
         renderCalendar();
@@ -931,11 +951,69 @@
     });
   });
 
-  // Init
-  updateStats();
-  renderWeeklyScheduleTable();
-  populateSettingsForm();
-  renderCalendar();
-  renderDayInspector();
-  renderBookingsTable();
+  async function initializeAdmin() {
+    if (!window.DAAMeetingSync || !window.DAAMeetingSync.isConfigured()) {
+      showBanner("Supabase is not configured; changes will remain in this browser only.", "error");
+    } else {
+      try {
+        var sharedBlocker = await window.DAAMeetingSync.loadBlockerData();
+        var sharedBookings = await window.DAAMeetingSync.loadBookings();
+        if (sharedBlocker && sharedBlocker.setupSeed) {
+          if (storedBlockerRaw) {
+            try {
+              var savedBlocker = JSON.parse(storedBlockerRaw);
+              if (savedBlocker.settings && savedBlocker.weeklySchedule) {
+                blockerData = savedBlocker;
+              } else {
+                blockerData = sharedBlocker;
+              }
+            } catch (error) {
+              console.error("Could not read this browser's saved meeting settings:", error);
+              blockerData = sharedBlocker;
+            }
+          } else {
+            blockerData = sharedBlocker;
+          }
+          delete blockerData.setupSeed;
+          await window.DAAMeetingSync.saveBlockerData(blockerData);
+        } else if (sharedBlocker) {
+          blockerData = sharedBlocker;
+        }
+        if (!sharedBookings.length && hadStoredBookings) {
+          var localBookings = bookings.filter(function (booking) {
+            return booking.id !== "booking-demo-1";
+          });
+          if (localBookings.length) {
+            await window.DAAMeetingSync.replaceBookings(localBookings);
+            sharedBookings = localBookings;
+          }
+        }
+        bookings = sharedBookings;
+        localStorage.setItem(BLOCKER_STORAGE_KEY, JSON.stringify(blockerData));
+        localStorage.setItem(BOOKINGS_STORAGE_KEY, JSON.stringify(bookings));
+      } catch (error) {
+        console.error("Could not load shared meeting data:", error);
+        showBanner("Could not load shared meeting data. No changes were synced: " + error.message, "error");
+      }
+    }
+    var timezoneNote = document.getElementById("admin-timezone-note");
+    if (timezoneNote) {
+      timezoneNote.textContent =
+        "Availability, blocked dates, and bookings use " +
+        blockerData.settings.timeZone +
+        ". Visitors see available times in their own time zone. Consultations are held on German local time (Europe/Berlin, CET/CEST).";
+    }
+    updateStats();
+    renderWeeklyScheduleTable();
+    populateSettingsForm();
+    renderCalendar();
+    renderDayInspector();
+    renderBookingsTable();
+  }
+
+  if (window.DAA_ADMIN_AUTHORIZED) {
+    initializeAdmin();
+  } else {
+    window.addEventListener("daa-admin-authorized", initializeAdmin, { once: true });
+  }
 })();

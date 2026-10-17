@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   if (!validLevels.includes(requestedLevel)) {
     return showGroupMessage(
-      "Choose a valid level group from the community page.",
+      "Choose a valid A1, A2, B1, or B2 level in the group link.",
       "error",
     );
   }
@@ -39,11 +39,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     var sessionResult = await client.auth.getSession();
     var session = sessionResult.data.session;
     if (sessionResult.error || !session)
-      return redirectToCommunity(
+      return showSignInUnavailable(
         "Please sign in before entering a level group.",
       );
     if (!session.user.email_confirmed_at)
-      return redirectToCommunity(
+      return showSignInUnavailable(
         "Please verify your email address before entering a level group.",
       );
 
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       return showGroupMessage(
         "This account is registered for " +
           (membershipResult.data ? membershipResult.data.level : "no level") +
-          ". Return to the community page to use your own group.",
+          ". This account cannot access the selected group.",
         "error",
       );
     }
@@ -480,14 +480,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     document.title = level + " Group - Deutsch am Abend";
   }
 
-  function redirectToCommunity(message) {
+  function showSignInUnavailable(message) {
     showGroupMessage(
-      message + " Redirecting you to community access...",
+      message + " Community group sign-in is currently unavailable.",
       "error",
     );
-    window.setTimeout(function () {
-      window.location.href = "community.html#account";
-    }, 1800);
   }
 
   function showGroupMessage(message, type) {

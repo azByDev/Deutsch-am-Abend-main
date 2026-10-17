@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard — Deutsch am Abend</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../assets/style.css" />
+    <style>
+      body {
+        min-height: 100vh;
+      }
+      .admin-layout {
+        display: flex;
+        min-height: 100vh;
+      }
+      .admin-layout[hidden] {
+        display: none;
+      }
+      .admin-sidebar {
+        width: 250px;
+        flex: 0 0 250px;
+        padding: 24px 16px;
+        background: var(--forest);
+        color: #fff;
+        transition:
+          width 0.2s ease,
+          flex-basis 0.2s ease;
+      }
+      .admin-sidebar .brand {
+        color: #fff;
+        margin: 0 0 32px;
+      }
+      .admin-sidebar .brand-name {
+        color: #fff;
+      }
+      .admin-sidebar .brand-name small {
+        color: rgba(255, 255, 255, 0.72);
+      }
+      .admin-nav {
+        display: grid;
+        gap: 8px;
+      }
+      .admin-nav button,
+      .sidebar-toggle {
+        width: 100%;
+        border: 0;
+        border-radius: 8px;
+        padding: 12px;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+      }
+      .admin-nav button:hover,
+      .admin-nav button[aria-current="page"] {
+        background: rgba(255, 255, 255, 0.14);
+      }
+      .sidebar-toggle {
+        margin-bottom: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+      }
+      .admin-main {
+        min-width: 0;
+        flex: 1;
+      }
+      .admin-topbar {
+        min-height: 72px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 16px clamp(18px, 4vw, 48px);
+        background: var(--paper);
+        border-bottom: 1px solid var(--line);
+      }
+      .admin-topbar h1 {
+        margin: 0;
+        font-size: 1.6rem;
+      }
+      .admin-content {
+        padding: 28px clamp(18px, 4vw, 48px);
+      }
+      .admin-view[hidden] {
+        display: none;
+      }
+      .admin-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        gap: 16px;
+        margin: 24px 0;
+      }
+      .admin-stat {
+        padding: 22px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+      }
+      .admin-stat span {
+        display: block;
+        color: var(--slate);
+        font-size: 0.84rem;
+      }
+      .admin-stat strong {
+        display: block;
+        margin-top: 8px;
+        color: var(--forest);
+        font: 700 2rem var(--display);
+      }
+      .admin-frame {
+        display: block;
+        width: 100%;
+        height: calc(100vh - 150px);
+        min-height: 680px;
+        border: 0;
+        background: var(--cream);
+      }
+      body.sidebar-collapsed .admin-sidebar {
+        width: 76px;
+        flex-basis: 76px;
+      }
+      body.sidebar-collapsed .admin-sidebar .brand-name,
+      body.sidebar-collapsed .admin-nav .nav-label {
+        display: none;
+      }
+      body.sidebar-collapsed .admin-nav button,
+      body.sidebar-collapsed .sidebar-toggle {
+        text-align: center;
+      }
+      @media (max-width: 700px) {
+        .admin-sidebar {
+          width: 76px;
+          flex-basis: 76px;
+          padding-inline: 10px;
+        }
+        .admin-sidebar .brand-name,
+        .admin-nav .nav-label {
+          display: none;
+        }
+        .admin-frame {
+          min-height: 560px;
+          height: calc(100vh - 130px);
+        }
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../assets/supabase-config.js"></script>
+    <script src="../assets/meeting-sync.js"></script>
+  </head>
+  <body>
+    <div class="admin-layout" data-admin-content hidden>
+      <aside class="admin-sidebar" aria-label="Admin sidebar">
+        <a href="../index.html" class="brand">
+          <span class="brand-mark">DAA</span>
+          <span class="brand-name">Admin<small>Deutsch am Abend</small></span>
+        </a>
+        <button
+          class="sidebar-toggle"
+          id="sidebar-toggle"
+          type="button"
+          aria-expanded="true"
+          aria-label="Collapse sidebar"
+        >
+          ☰ <span class="nav-label">Collapse menu</span>
+        </button>
+        <nav class="admin-nav" aria-label="Dashboard sections">
+          <button type="button" data-view="home" aria-current="page">
+            ⌂ <span class="nav-label">Overview</span>
+          </button>
+          <button type="button" data-view="events">
+            ▦ <span class="nav-label">Events &amp; Courses</span>
+          </button>
+          <button type="button" data-view="blocker">
+            ◷ <span class="nav-label">Meeting Blocker</span>
+          </button>
+          <button type="button" data-view="availability">
+            ＋ <span class="nav-label">Teacher Availability</span>
+          </button>
+        </nav>
+      </aside>
+      <main class="admin-main">
+        <header class="admin-topbar">
+          <h1 id="view-heading">Dashboard overview</h1>
+          <a class="btn btn-secondary" href="../index.html">View website ↗</a>
+        </header>
+        <section class="admin-content admin-view" data-view-panel="home">
+          <p class="lede">
+            A quick view of your events and consultation schedule.
+          </p>
+          <div class="admin-stats" aria-live="polite">
+            <article class="admin-stat">
+              <span>Published events</span><strong id="stat-events">—</strong>
+            </article>
+            <article class="admin-stat">
+              <span>Upcoming consultations</span
+              ><strong id="stat-meetings">—</strong>
+            </article>
+            <article class="admin-stat">
+              <span>Blocked dates</span><strong id="stat-dates">—</strong>
+            </article>
+            <article class="admin-stat">
+              <span>Blocked time slots</span><strong id="stat-slots">—</strong>
+            </article>
+          </div>
+          <p class="cms-help" id="dashboard-status" role="status">
+            Loading shared meeting data…
+          </p>
+        </section>
+        <section
+          class="admin-view"
+          data-view-panel="events"
+          hidden
+          aria-label="Events and courses"
+        >
+          <iframe
+            class="admin-frame"
+            data-src="events.html?embed=1"
+            title="Events and courses administration"
+          ></iframe>
+        </section>
+        <section
+          class="admin-view"
+          data-view-panel="blocker"
+          hidden
+          aria-label="Meeting blocker"
+        >
+          <iframe
+            class="admin-frame"
+            data-src="meeting-blocker.html?embed=1"
+            title="Meeting blocker administration"
+          ></iframe>
+        </section>
+        <section
+          class="admin-view"
+          data-view-panel="availability"
+          hidden
+          aria-label="Teacher availability"
+        >
+          <iframe
+            class="admin-frame"
+            data-src="teacher-availability.html"
+            title="Teacher availability form"
+          ></iframe>
+        </section>
+      </main>
+    </div>
+    <script src="meeting-auth.js"></script>
+    <script src="dashboard.js"></script>
+  </body>
+</html>

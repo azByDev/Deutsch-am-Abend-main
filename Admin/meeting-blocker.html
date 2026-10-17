@@ -750,13 +750,18 @@
         gap: 10px;
         margin-top: 18px;
       }
+
+      body.embed .site-header,
+      body.embed .hero {
+        display: none;
+      }
     </style>
   </head>
 
   <body>
     <a href="#main" class="skip-link">Skip to main content</a>
 
-    <header class="site-header">
+    <header class="site-header" data-admin-content hidden>
       <div class="container">
         <a href="../index.html" class="brand">
           <span class="brand-mark">DAA</span>
@@ -766,7 +771,8 @@
           </span>
         </a>
         <nav class="main-nav" aria-label="Admin Navigation">
-          <a href="index.html">Events &amp; Courses CMS</a>
+          <a href="dashboard.html">Admin Dashboard</a>
+          <a href="events.html">Events &amp; Courses CMS</a>
           <a href="meeting-blocker.html" class="active">Meeting Blocker</a>
           <a href="teacher-availability.html">Teacher Availability</a>
           <a href="../meetings.html" target="_blank" rel="noopener">
@@ -776,7 +782,7 @@
       </div>
     </header>
 
-    <main id="main">
+    <main id="main" data-admin-content hidden>
       <section class="hero" style="padding: 48px 0 40px">
         <div class="container cms-shell">
           <span class="eyebrow">Schedule &amp; Availability Control</span>
@@ -1392,6 +1398,10 @@
       </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../assets/supabase-config.js"></script>
+    <script src="../assets/meeting-sync.js"></script>
+    <script src="meeting-auth.js"></script>
     <script src="meeting-blocker.js"></script>
   </body>
 </html>
