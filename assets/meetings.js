@@ -48,15 +48,24 @@
   var selectedSlot = null; // { time, endTime }
   var latestConfirmedBooking = null;
 
+  function sanitizeBlockerData(data) {
+    var fallback = JSON.parse(JSON.stringify(defaultBlockerData));
+    if (!data || typeof data !== "object") {
+      return fallback;
+    }
+    return {
+      settings: Object.assign({}, fallback.settings, data.settings || {}),
+      weeklySchedule: Object.assign({}, fallback.weeklySchedule, data.weeklySchedule || {}),
+      blockedDates: Array.isArray(data.blockedDates) ? data.blockedDates : fallback.blockedDates,
+      blockedSlots: Array.isArray(data.blockedSlots) ? data.blockedSlots : fallback.blockedSlots,
+    };
+  }
+
   function loadBlockerData() {
     try {
       var raw = localStorage.getItem(BLOCKER_STORAGE_KEY);
       if (!raw) return JSON.parse(JSON.stringify(defaultBlockerData));
-      var parsed = JSON.parse(raw);
-      if (!parsed.weeklySchedule || !parsed.settings) {
-        return JSON.parse(JSON.stringify(defaultBlockerData));
-      }
-      return parsed;
+      return sanitizeBlockerData(JSON.parse(raw));
     } catch (e) {
       return JSON.parse(JSON.stringify(defaultBlockerData));
     }
@@ -197,10 +206,12 @@
   function buildSourceSlots(sourceDate) {
     var d = parseDateKey(sourceDate);
     var weekday = getWeekdayName(d);
-    var dayConfig = blockerData.weeklySchedule[weekday];
+    var weekly = blockerData.weeklySchedule || defaultBlockerData.weeklySchedule;
+    var dayConfig = weekly ? weekly[weekday] : null;
     if (!dayConfig || !dayConfig.active) return [];
+    var blockedDates = Array.isArray(blockerData.blockedDates) ? blockerData.blockedDates : [];
     if (
-      blockerData.blockedDates.some(function (b) {
+      blockedDates.some(function (b) {
         return b.date === sourceDate;
       })
     )
@@ -208,24 +219,26 @@
 
     var startMin = timeStrToMinutes(dayConfig.start);
     var endMin = timeStrToMinutes(dayConfig.end);
-    var duration = blockerData.settings.slotDurationMinutes || 45;
+    var duration = (blockerData.settings && blockerData.settings.slotDurationMinutes) || 45;
     var buffer =
-      blockerData.settings.bufferMinutes !== undefined
+      blockerData.settings && blockerData.settings.bufferMinutes !== undefined
         ? blockerData.settings.bufferMinutes
         : 15;
     var step = duration + buffer;
     var sourceSlots = [];
+    var blockedSlots = Array.isArray(blockerData.blockedSlots) ? blockerData.blockedSlots : [];
+    var activeBookings = Array.isArray(bookings) ? bookings : [];
 
     for (var cur = startMin; cur + duration <= endMin; cur += step) {
       var sourceTime = minutesToTimeStr(cur);
       if (
-        blockerData.blockedSlots.some(function (s) {
+        blockedSlots.some(function (s) {
           return s.date === sourceDate && s.time === sourceTime;
         })
       )
         continue;
       if (
-        bookings.some(function (b) {
+        activeBookings.some(function (b) {
           return (
             b.date === sourceDate &&
             b.time === sourceTime &&
@@ -368,7 +381,8 @@
       var cellDate = new Date(currentYear, currentMonth, day);
       var dateKey = formatDateKey(cellDate);
       var weekday = getWeekdayName(cellDate);
-      var dayConfig = blockerData.weeklySchedule[weekday];
+      var weekly = blockerData.weeklySchedule || defaultBlockerData.weeklySchedule;
+      var dayConfig = weekly ? weekly[weekday] : null;
 
       var cell = document.createElement("div");
       cell.className = "pub-cal-day";
@@ -382,7 +396,8 @@
       var isPast = cellDate < todayStart;
       var isTooFar = cellDate > maxDate;
       var isClosedDay = !dayConfig || !dayConfig.active;
-      var isFullDayBlocked = blockerData.blockedDates.some(function (b) {
+      var blockedDates = Array.isArray(blockerData.blockedDates) ? blockerData.blockedDates : [];
+      var isFullDayBlocked = blockedDates.some(function (b) {
         return b.date === dateKey;
       });
 
@@ -555,7 +570,7 @@
         }
       } catch (error) {
         var errText = error && error.message ? error.message : String(error);
-        console.warn("Could not sync booking to Supabase:", error);
+        console.warn("Could not sync booking to remote Supabase database:", error);
         if (/duplicate key|unique constraint|not available/i.test(errText)) {
           statusDiv.className = "form-status error";
           statusDiv.textContent =
@@ -578,12 +593,12 @@
         payload.append(
           "subject",
           "New 1-on-1 Consultation: " +
-            name +
-            " (" +
-            selectedSlot.localDate +
-            " at " +
-            selectedSlot.time +
-            ")",
+          name +
+          " (" +
+          selectedSlot.localDate +
+          " at " +
+          selectedSlot.time +
+          ")",
         );
         payload.append("from_name", name);
         payload.append("email", email);
@@ -597,26 +612,26 @@
             "Phone: " + phone,
             "Topic: " + topic,
             "Visitor local date: " +
-              selectedSlot.localDate +
-              " (" +
-              formatDisplayDate(selectedSlot.localDate) +
-              ")",
+            selectedSlot.localDate +
+            " (" +
+            formatDisplayDate(selectedSlot.localDate) +
+            ")",
             "Visitor local time: " +
-              selectedSlot.time +
-              " - " +
-              selectedSlot.endTime +
-              " (" +
-              selectedSlot.duration +
-              " mins, " +
-              visitorTimeZone +
-              ")",
+            selectedSlot.time +
+            " - " +
+            selectedSlot.endTime +
+            " (" +
+            selectedSlot.duration +
+            " mins, " +
+            visitorTimeZone +
+            ")",
             "Schedule time: " +
-              selectedSlot.sourceDate +
-              " at " +
-              selectedSlot.sourceTime +
-              " (" +
-              scheduleTimeZone +
-              ")",
+            selectedSlot.sourceDate +
+            " at " +
+            selectedSlot.sourceTime +
+            " (" +
+            scheduleTimeZone +
+            ")",
             "Notes: " + (notes || "None provided"),
             "",
             "Sent from the Deutsch am Abend meeting scheduler.",
@@ -681,10 +696,10 @@
       );
       var gcalDetails = encodeURIComponent(
         "Consultation for " +
-          b.fullName +
-          " on " +
-          b.topic +
-          ". Deutsch am Abend German Community.",
+        b.fullName +
+        " on " +
+        b.topic +
+        ". Deutsch am Abend German Community.",
       );
       var gcalLoc = encodeURIComponent(
         blockerData.settings.meetingLocation || "Online via Google Meet",
@@ -737,19 +752,19 @@
       "BEGIN:VEVENT",
       "UID:" + b.id + "@deutschamabend.org",
       "DTSTAMP:" +
-        new Date().toISOString().replace(/[-:]/g, "").slice(0, 15) +
-        "Z",
+      new Date().toISOString().replace(/[-:]/g, "").slice(0, 15) +
+      "Z",
       "DTSTART:" + startDtStr,
       "DTEND:" + endDtStr,
       "SUMMARY:" +
-        (blockerData.settings.meetingTitle || "1-on-1 German Consultation"),
+      (blockerData.settings.meetingTitle || "1-on-1 German Consultation"),
       "DESCRIPTION:Consultation with Deutsch am Abend advisor for " +
-        b.fullName +
-        " (" +
-        b.topic +
-        ").",
+      b.fullName +
+      " (" +
+      b.topic +
+      ").",
       "LOCATION:" +
-        (blockerData.settings.meetingLocation || "Online via Google Meet"),
+      (blockerData.settings.meetingLocation || "Online via Google Meet"),
       "STATUS:CONFIRMED",
       "END:VEVENT",
       "END:VCALENDAR",
@@ -818,32 +833,47 @@
 
   async function initializeScheduler() {
     var status = document.getElementById("booking-form-status");
+
+    // Render calendar immediately with local defaults so available date slots show instantly
+    renderCalendar();
+
     if (window.DAAMeetingSync && window.DAAMeetingSync.isConfigured()) {
+      var didUpdate = false;
       try {
         var sharedBlocker = await window.DAAMeetingSync.loadBlockerData();
-        if (sharedBlocker) blockerData = sharedBlocker;
+        if (sharedBlocker) {
+          blockerData = sanitizeBlockerData(sharedBlocker);
+          didUpdate = true;
+        }
+      } catch (error) {
+        console.warn("Could not load shared consultation settings; using local defaults:", error);
+      }
+
+      try {
         var fromDate = formatDateKey(new Date());
         var untilDate = formatDateKey(
           new Date(Date.now() + 366 * 24 * 60 * 60 * 1000),
         );
-        bookings = await window.DAAMeetingSync.loadBookedSlots(fromDate, untilDate);
-        scheduleTimeZone = blockerData.settings.timeZone || visitorTimeZone;
-        if (status) {
-          status.className = "";
-          status.textContent = "";
+        var loadedBookings = await window.DAAMeetingSync.loadBookedSlots(fromDate, untilDate);
+        if (Array.isArray(loadedBookings)) {
+          bookings = loadedBookings;
+          didUpdate = true;
         }
       } catch (error) {
-        console.warn(
-          "Could not load shared consultation availability; falling back to default schedule:",
-          error,
-        );
-        if (status) {
-          status.className = "";
-          status.textContent = "";
-        }
+        console.warn("Could not load booked slots; using local defaults:", error);
+      }
+
+      scheduleTimeZone = (blockerData.settings && blockerData.settings.timeZone) || visitorTimeZone;
+
+      if (didUpdate) {
+        renderCalendar();
       }
     }
-    renderCalendar();
+
+    if (status) {
+      status.className = "";
+      status.textContent = "";
+    }
   }
 
   initializeScheduler();
