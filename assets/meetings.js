@@ -554,15 +554,18 @@
           await window.DAAMeetingSync.createBooking(newBooking);
         }
       } catch (error) {
-        statusDiv.className = "form-status error";
-        statusDiv.textContent =
-          /duplicate key|unique constraint|not available/i.test(error.message)
-            ? "That time was just booked by someone else. Please choose another slot."
-            : "We could not save your booking. Please try again or contact us directly.";
-        console.error("Could not save consultation booking:", error);
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Confirm Consultation Reservation \u2192";
-        return;
+        var errText = error && error.message ? error.message : String(error);
+        console.warn("Could not sync booking to Supabase:", error);
+        if (/duplicate key|unique constraint|not available/i.test(errText)) {
+          statusDiv.className = "form-status error";
+          statusDiv.textContent =
+            "That time was just booked by someone else. Please choose another slot.";
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Confirm Consultation Reservation \u2192";
+          return;
+        }
+        // If it's a backend setup or connection issue, proceed with local save & email notification
+        // so the learner's consultation booking is never lost.
       }
 
       saveBooking(newBooking);
@@ -830,17 +833,15 @@
           status.textContent = "";
         }
       } catch (error) {
-        console.error("Could not load shared consultation availability:", error);
+        console.warn(
+          "Could not load shared consultation availability; falling back to default schedule:",
+          error,
+        );
         if (status) {
-          status.className = "form-status error";
-          status.textContent =
-            "We could not load the current consultation schedule. Please refresh or contact us directly.";
+          status.className = "";
+          status.textContent = "";
         }
       }
-    } else if (status) {
-      status.className = "form-status error";
-      status.textContent =
-        "Shared booking sync is not configured yet; new reservations may not be visible on other devices.";
     }
     renderCalendar();
   }
