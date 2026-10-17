@@ -343,7 +343,46 @@
             if (result.error) throw result.error;
             await verifyAndRedirect(result.data.user);
           } catch (err) {
-            setStatus(err.message || "Sign-in failed. Please try again.", "error");
+            var msg = err.message || "Sign-in failed. Please try again.";
+            var lower = msg.toLowerCase();
+            if (lower.includes("email not confirmed")) {
+              var btnHtml =
+                '<div style="margin-top:8px"><button type="button" id="resend-conf-btn" style="background:none;border:none;color:var(--forest);font-weight:600;text-decoration:underline;cursor:pointer;padding:0;font-size:inherit">Resend confirmation email</button><span id="resend-conf-msg" style="margin-left:8px;font-size:0.82rem"></span></div>' +
+                '<p style="margin-top:6px;font-size:0.8rem;color:var(--slate)">Tip: Check spam folder, or confirm this user directly in Supabase Dashboard &gt; Authentication &gt; Users.</p>';
+              setStatus(
+                "<strong>Email not confirmed yet.</strong> " + btnHtml,
+                "error",
+                true
+              );
+              var resendBtn = document.getElementById("resend-conf-btn");
+              var resendMsg = document.getElementById("resend-conf-msg");
+              if (resendBtn) {
+                resendBtn.addEventListener("click", async function () {
+                  resendBtn.disabled = true;
+                  resendMsg.textContent = "Sending…";
+                  try {
+                    var r = await client.auth.resend({ type: "signup", email: email });
+                    if (r.error) throw r.error;
+                    resendMsg.textContent = "Sent! Check inbox and spam.";
+                    resendMsg.style.color = "var(--forest)";
+                  } catch (resendErr) {
+                    resendMsg.textContent = "Error: " + (resendErr.message || "Try again");
+                    resendMsg.style.color = "#a33";
+                    resendBtn.disabled = false;
+                  }
+                });
+              }
+              return;
+            }
+            if (lower.includes("schema cache") || msg.includes("daa_admin_users")) {
+              setStatus(
+                "<strong>Database table missing:</strong> The table <code>public.daa_admin_users</code> was not found in Supabase. Please open the Supabase SQL Editor and run <code>supabase-meeting-sync.sql</code>.",
+                "error",
+                true
+              );
+              return;
+            }
+            setStatus(msg, "error");
           } finally {
             submitButton.disabled = false;
           }
@@ -356,10 +395,27 @@
               .select("user_id")
               .eq("user_id", user.id)
               .maybeSingle();
-            if (result.error) throw result.error;
+            if (result.error) {
+              var errMsg = result.error.message || "";
+              if (errMsg.includes("daa_admin_users") || errMsg.toLowerCase().includes("schema cache")) {
+                setStatus(
+                  "<strong>Database table missing:</strong> The table <code>public.daa_admin_users</code> was not found in Supabase. Please open the Supabase SQL Editor and run <code>supabase-meeting-sync.sql</code>.",
+                  "error",
+                  true
+                );
+                return;
+              }
+              throw result.error;
+            }
             if (!result.data) {
               await client.auth.signOut();
-              setStatus("This account is not authorized for admin access.", "error");
+              setStatus(
+                "<strong>Admin access required:</strong> Your login is valid, but user ID <code>" +
+                  escapeHtml(user.id) +
+                  "</code> is not authorized in <code>daa_admin_users</code> yet. Add this UUID to <code>public.daa_admin_users</code> in Supabase to grant access.",
+                "error",
+                true
+              );
               return;
             }
             setStatus("Redirecting to dashboard…", "success");
@@ -369,8 +425,18 @@
           }
         }
 
-        function setStatus(message, type) {
-          statusEl.textContent = message;
+        function escapeHtml(text) {
+          var div = document.createElement("div");
+          div.textContent = text || "";
+          return div.innerHTML;
+        }
+
+        function setStatus(message, type, isHtml) {
+          if (isHtml) {
+            statusEl.innerHTML = message;
+          } else {
+            statusEl.textContent = message;
+          }
           statusEl.className = "auth-status " + (type || "");
         }
       })();
