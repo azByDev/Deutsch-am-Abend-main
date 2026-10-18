@@ -48,14 +48,7 @@
       .select("user_id")
       .eq("user_id", user.id)
       .maybeSingle();
-    if (result.error) {
-      var errMsg = result.error.message || "";
-      if (errMsg.includes("daa_admin_users") || errMsg.toLowerCase().includes("schema cache")) {
-        showFallbackGate("Database table missing: Table 'public.daa_admin_users' was not found in Supabase. Please run supabase-meeting-sync.sql in the Supabase SQL Editor.");
-        return;
-      }
-      throw result.error;
-    }
+    if (result.error) throw result.error;
     if (!result.data) {
       await client.auth.signOut();
       throw new Error("This account is not authorized to access the admin dashboard.");

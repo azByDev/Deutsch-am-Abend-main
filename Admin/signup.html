@@ -407,29 +407,14 @@
           <path d="M20 6L9 17l-5-5"/>
         </svg>
       </div>
-      <h2 id="success-heading">Check your email</h2>
-      <p id="success-message">
+      <h2>Check your email</h2>
+      <p>
         We've sent a confirmation link to <strong id="success-email"></strong>.
         Click the link in the email to verify your account.
       </p>
-      <p id="success-next-step">
+      <p>
         Once verified, an admin will grant you dashboard access.
       </p>
-
-      <div class="auth-notice" id="signup-notice-box" style="text-align:left;margin-top:20px">
-        <strong>Haven't received an email?</strong>
-        <ul style="margin:8px 0 0 18px;padding:0;font-size:0.82rem;color:var(--slate);line-height:1.5">
-          <li>Check your spam or junk folder.</li>
-          <li>Supabase default email service has strict rate limits.</li>
-          <li>If you own the Supabase project, you can confirm this user directly in <strong>Supabase Dashboard &rarr; Authentication &rarr; Users &rarr; Confirm user</strong>, or run the SQL helper script.</li>
-        </ul>
-        <div style="margin-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-          <button type="button" id="signup-resend-btn" style="padding:6px 14px;border:1px solid var(--line);border-radius:6px;background:var(--cream);font:inherit;font-size:0.84rem;font-weight:600;color:var(--forest);cursor:pointer">
-            Resend confirmation email
-          </button>
-          <span id="signup-resend-status" style="font-size:0.82rem"></span>
-        </div>
-      </div>
 
       <div class="auth-footer">
         <a href="index.html">Go to sign in</a>
@@ -535,50 +520,10 @@
             });
             if (result.error) throw result.error;
 
-            if (result.data && result.data.user && result.data.user.identities && result.data.user.identities.length === 0) {
-              setStatus("An account with this email address already exists. Please go to the sign-in page.", "error");
-              return;
-            }
-
             /* Show success screen */
             successEmailEl.textContent = email;
             cardEl.style.display = "none";
             successEl.style.display = "";
-
-            /* If Supabase email confirmation is disabled, user is immediately confirmed */
-            if (result.data && result.data.session) {
-              var headingEl = document.getElementById("success-heading");
-              var msgEl = document.getElementById("success-message");
-              var noticeEl = document.getElementById("signup-notice-box");
-              if (headingEl) headingEl.textContent = "Account created!";
-              if (msgEl) msgEl.textContent = "Your account is active. An existing admin must authorize your access in Supabase before you can open the dashboard.";
-              if (noticeEl) noticeEl.style.display = "none";
-            }
-
-            /* Hook up resend button */
-            var resendBtn = document.getElementById("signup-resend-btn");
-            var resendStatus = document.getElementById("signup-resend-status");
-            if (resendBtn && !resendBtn.dataset.bound) {
-              resendBtn.dataset.bound = "true";
-              resendBtn.addEventListener("click", async function () {
-                resendBtn.disabled = true;
-                resendStatus.textContent = "Sending…";
-                resendStatus.style.color = "var(--slate)";
-                try {
-                  var r = await client.auth.resend({ type: "signup", email: email });
-                  if (r.error) throw r.error;
-                  resendStatus.textContent = "Confirmation email sent! Check inbox & spam.";
-                  resendStatus.style.color = "var(--forest)";
-                } catch (resendErr) {
-                  resendStatus.textContent = "Error: " + (resendErr.message || "Could not resend");
-                  resendStatus.style.color = "#a33";
-                } finally {
-                  setTimeout(function () {
-                    resendBtn.disabled = false;
-                  }, 8000);
-                }
-              });
-            }
           } catch (err) {
             setStatus(err.message || "Sign-up failed. Please try again.", "error");
           } finally {

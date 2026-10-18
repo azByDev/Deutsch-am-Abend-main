@@ -263,29 +263,5 @@ grant select on public.daa_meeting_settings to anon;
 grant insert, update on public.daa_meeting_settings to authenticated;
 grant select, insert, update on public.daa_meeting_bookings to authenticated;
 
--- Tell PostgREST to reload the schema cache immediately:
-notify pgrst, 'reload schema';
-
--- -----------------------------------------------------------------------------
--- QUICK ADMIN SETUP & TROUBLESHOOTING
--- Run any of these queries in your Supabase SQL Editor as needed:
--- -----------------------------------------------------------------------------
-
--- 1. If you did not receive a sign-up confirmation email, run this to
---    instantly verify all registered users without needing an email:
--- update auth.users
--- set email_confirmed_at = coalesce(email_confirmed_at, now())
--- where email_confirmed_at is null;
-
--- 2. Grant admin dashboard access to ALL existing registered users:
--- insert into public.daa_admin_users (user_id)
--- select id from auth.users
--- on conflict (user_id) do nothing;
-
--- 3. Or grant admin access to a specific user UUID:
--- insert into public.daa_admin_users (user_id)
--- values ('YOUR-AUTH-USER-UUID')
--- on conflict (user_id) do nothing;
-
--- 4. Reload the schema cache:
--- notify pgrst, 'reload schema';
+-- After creating and confirming an admin account, add its auth.users UUID:
+-- insert into public.daa_admin_users (user_id) values ('YOUR-AUTH-USER-UUID');
