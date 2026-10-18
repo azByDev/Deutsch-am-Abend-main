@@ -56,6 +56,7 @@
         throw new Error("Configure the Supabase project URL and anon key to load shared meeting statistics.");
       }
       var blocker = await config.loadBlockerData();
+      if (blocker) blocker = config.normalizeBlockerData(blocker);
       var bookings = await config.loadBookings();
       showCount(
         "stat-meetings",

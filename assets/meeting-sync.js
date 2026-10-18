@@ -38,6 +38,25 @@
     return result.data ? result.data.data : null;
   }
 
+  function normalizeBlockerData(data) {
+    if (!data || typeof data !== "object" || Array.isArray(data)) {
+      throw new Error("Meeting availability data must be an object.");
+    }
+
+    var normalized = Object.assign({}, data);
+    ["blockedDates", "blockedSlots"].forEach(function (key) {
+      var entries = data[key];
+      if (entries === undefined || entries === null) {
+        normalized[key] = [];
+      } else if (!Array.isArray(entries)) {
+        throw new Error("Meeting availability data has an invalid " + key + " list.");
+      } else {
+        normalized[key] = entries;
+      }
+    });
+    return normalized;
+  }
+
   async function saveBlockerData(data) {
     var result = await getClient()
       .from(blockerTable)
@@ -175,6 +194,7 @@
     isConfigured: isConfigured,
     getClient: getClient,
     loadBlockerData: loadBlockerData,
+    normalizeBlockerData: normalizeBlockerData,
     saveBlockerData: saveBlockerData,
     loadBookings: loadBookings,
     loadBookedSlots: loadBookedSlots,

@@ -78,7 +78,7 @@
       if (!parsed.weeklySchedule || !parsed.settings) {
         return JSON.parse(JSON.stringify(defaultBlockerData));
       }
-      return parsed;
+      return window.DAAMeetingSync.normalizeBlockerData(parsed);
     } catch (e) {
       return JSON.parse(JSON.stringify(defaultBlockerData));
     }
@@ -857,12 +857,12 @@
       try {
         var imported = JSON.parse(reader.result);
         if (imported.blockerData) {
-          blockerData = imported.blockerData;
+          blockerData = window.DAAMeetingSync.normalizeBlockerData(imported.blockerData);
           if (Array.isArray(imported.bookings)) {
             bookings = imported.bookings;
           }
         } else if (imported.weeklySchedule && imported.settings) {
-          blockerData = imported;
+          blockerData = window.DAAMeetingSync.normalizeBlockerData(imported);
         } else {
           throw new Error("Invalid structure");
         }
@@ -963,21 +963,21 @@
             try {
               var savedBlocker = JSON.parse(storedBlockerRaw);
               if (savedBlocker.settings && savedBlocker.weeklySchedule) {
-                blockerData = savedBlocker;
+                blockerData = window.DAAMeetingSync.normalizeBlockerData(savedBlocker);
               } else {
-                blockerData = sharedBlocker;
+                blockerData = window.DAAMeetingSync.normalizeBlockerData(sharedBlocker);
               }
             } catch (error) {
               console.error("Could not read this browser's saved meeting settings:", error);
-              blockerData = sharedBlocker;
+              blockerData = window.DAAMeetingSync.normalizeBlockerData(sharedBlocker);
             }
           } else {
-            blockerData = sharedBlocker;
+            blockerData = window.DAAMeetingSync.normalizeBlockerData(sharedBlocker);
           }
           delete blockerData.setupSeed;
           await window.DAAMeetingSync.saveBlockerData(blockerData);
         } else if (sharedBlocker) {
-          blockerData = sharedBlocker;
+          blockerData = window.DAAMeetingSync.normalizeBlockerData(sharedBlocker);
         }
         if (!sharedBookings.length && hadStoredBookings) {
           var localBookings = bookings.filter(function (booking) {
